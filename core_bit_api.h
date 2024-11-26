@@ -18,10 +18,10 @@ SW_PUBL_API_IMPL inline SwU32 swBitClz32(SwU32 u) { SW_DASSERT(u != 0); return _
 SW_PUBL_API_IMPL inline SwU32 swBitCtz32(SwU32 u) { SW_DASSERT(u != 0); return __builtin_ctz(u); }
 SW_PUBL_API_IMPL inline SwU32 swBitPackBE32(SwU8 b24,SwU8 b16,SwU8 b08,SwU8 b00) { return ((SwU32)b24<<24)|((SwU32)b16<<16)|((SwU32)b08<<8)|(SwU32)b00; }
 SW_PUBL_API_IMPL inline SwU32 swBitPackLE32(SwU8 b00,SwU8 b08,SwU8 b16,SwU8 b24) { return ((SwU32)b24<<24)|((SwU32)b16<<16)|((SwU32)b08<<8)|(SwU32)b00; }
-SW_PUBL_API_IMPL inline SwU32 swBitReadBE32(SwU8* bp) { return swBitPackBE32(bp[0],bp[1],bp[2],bp[3]); }
-SW_PUBL_API_IMPL inline SwU32 swBitReadLE32(SwU8* bp) { return swBitPackLE32(bp[0],bp[1],bp[2],bp[3]); }
-SW_PUBL_API_IMPL inline void swBitWriteBE32(SwU8* bp, SwU32 u) { bp[0]=(u>>24); bp[1]=(u>>16)&0xFF; bp[2]=(u>>8)&0xFF; bp[3]=u&0xFF; }
-SW_PUBL_API_IMPL inline void swBitWriteLE32(SwU8* bp, SwU32 u) { bp[3]=(u>>24); bp[2]=(u>>16)&0xFF; bp[1]=(u>>8)&0xFF; bp[0]=u&0xFF; }
+SW_PUBL_API_IMPL inline SwU32 swBitReadBE32(const SwU8* bp) { return swBitPackBE32(bp[0],bp[1],bp[2],bp[3]); }
+SW_PUBL_API_IMPL inline SwU32 swBitReadLE32(const SwU8* bp) { return swBitPackLE32(bp[0],bp[1],bp[2],bp[3]); }
+SW_PUBL_API_IMPL inline void swBitWriteBE32(mutable SwU8* bp, SwU32 u) { bp[0]=(u>>24); bp[1]=(u>>16)&0xFF; bp[2]=(u>>8)&0xFF; bp[3]=u&0xFF; }
+SW_PUBL_API_IMPL inline void swBitWriteLE32(mutable SwU8* bp, SwU32 u) { bp[3]=(u>>24); bp[2]=(u>>16)&0xFF; bp[1]=(u>>8)&0xFF; bp[0]=u&0xFF; }
 
 SW_PUBL_API_IMPL inline SwU64 swBitLo64(SwU64 n) { SW_DASSERT(n < 64); return ((SwU64)1 << n) - 1; }
 SW_PUBL_API_IMPL inline SwU64 swBitHi64(SwU64 n) { return swBitLo64(n) << (64 - n); }
@@ -30,10 +30,10 @@ SW_PUBL_API_IMPL inline SwUsz swBitClz64(SwU64 u) { SW_DASSERT(u != 0); return _
 SW_PUBL_API_IMPL inline SwUsz swBitCtz64(SwU64 u) { SW_DASSERT(u != 0); return __builtin_ctzll(u); }
 SW_PUBL_API_IMPL inline SwU64 swBitPackBE64(SwU8 b56,SwU8 b48,SwU8 b40,SwU8 b32,SwU8 b24,SwU8 b16,SwU8 b08,SwU8 b00) { return ((SwU64)b56<<56)|((SwU64)b48<<48)|((SwU64)b40<<40)|((SwU64)b32<<32)|((SwU64)b24<<24)|((SwU64)b16<<16)|((SwU64)b08<<8)|(SwU64)b00; }
 SW_PUBL_API_IMPL inline SwU64 swBitPackLE64(SwU8 b00,SwU8 b08,SwU8 b16,SwU8 b24,SwU8 b32,SwU8 b40,SwU8 b48,SwU8 b56) { return ((SwU64)b56<<56)|((SwU64)b48<<48)|((SwU64)b40<<40)|((SwU64)b32<<32)|((SwU64)b24<<24)|((SwU64)b16<<16)|((SwU64)b08<<8)|(SwU64)b00; }
-SW_PUBL_API_IMPL inline SwU64 swBitReadBE64(SwU8* bp) { return swBitPackBE64(bp[0],bp[1],bp[2],bp[3],bp[4],bp[5],bp[6],bp[7]); }
-SW_PUBL_API_IMPL inline SwU64 swBitReadLE64(SwU8* bp) { return swBitPackLE64(bp[0],bp[1],bp[2],bp[3],bp[4],bp[5],bp[6],bp[7]); }
-SW_PUBL_API_IMPL inline void swBitWriteBE64(SwU8* bp, SwU64 u) { bp[0]=(u>>56); bp[1]=(u>>48)&0xFF; bp[2]=(u>>40)&0xFF; bp[3]=(u>>32)&0xFF; bp[4]=(u>>24)&0xFF; bp[5]=(u>>16)&0xFF; bp[6]=(u>>8)&0xFF; bp[7]=u&0xFF; }
-SW_PUBL_API_IMPL inline void swBitWriteLE64(SwU8* bp, SwU64 u) { bp[7]=(u>>56); bp[6]=(u>>48)&0xFF; bp[5]=(u>>40)&0xFF; bp[4]=(u>>32)&0xFF; bp[3]=(u>>24)&0xFF; bp[2]=(u>>16)&0xFF; bp[1]=(u>>8)&0xFF; bp[0]=u&0xFF; }
+SW_PUBL_API_IMPL inline SwU64 swBitReadBE64(const SwU8* bp) { return swBitPackBE64(bp[0],bp[1],bp[2],bp[3],bp[4],bp[5],bp[6],bp[7]); }
+SW_PUBL_API_IMPL inline SwU64 swBitReadLE64(const SwU8* bp) { return swBitPackLE64(bp[0],bp[1],bp[2],bp[3],bp[4],bp[5],bp[6],bp[7]); }
+SW_PUBL_API_IMPL inline void swBitWriteBE64(mutable SwU8* bp, SwU64 u) { bp[0]=(u>>56); bp[1]=(u>>48)&0xFF; bp[2]=(u>>40)&0xFF; bp[3]=(u>>32)&0xFF; bp[4]=(u>>24)&0xFF; bp[5]=(u>>16)&0xFF; bp[6]=(u>>8)&0xFF; bp[7]=u&0xFF; }
+SW_PUBL_API_IMPL inline void swBitWriteLE64(mutable SwU8* bp, SwU64 u) { bp[7]=(u>>56); bp[6]=(u>>48)&0xFF; bp[5]=(u>>40)&0xFF; bp[4]=(u>>32)&0xFF; bp[3]=(u>>24)&0xFF; bp[2]=(u>>16)&0xFF; bp[1]=(u>>8)&0xFF; bp[0]=u&0xFF; }
 
 
 // Reference for future implementation https://fgiesen.wordpress.com/2018/02/19/reading-bits-in-far-too-many-ways-part-1/
