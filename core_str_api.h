@@ -43,6 +43,9 @@ SW_PUBL_API_IMPL inline SwBool swStrIsAny8_VA6(SwUsz nBytesToCompMax, SwStrUtf8z
 SW_PUBL_API_IMPL inline SwBool swStrIsAny8_VA7(SwUsz nBytesToCompMax, SwStrUtf8z str, SwStrUtf8z a1, SwStrUtf8z a2, SwStrUtf8z a3, SwStrUtf8z a4, SwStrUtf8z a5, SwStrUtf8z a6, SwStrUtf8z a7) { return swStrEqual8(nBytesToCompMax,str,a1)|swStrEqual8(nBytesToCompMax,str,a2)|swStrEqual8(nBytesToCompMax,str,a3)|swStrEqual8(nBytesToCompMax,str,a4)|swStrEqual8(nBytesToCompMax,str,a5)|swStrEqual8(nBytesToCompMax,str,a6)|swStrEqual8(nBytesToCompMax,str,a7); }
 SW_PUBL_API_IMPL inline SwBool swStrIsAny8_VA8(SwUsz nBytesToCompMax, SwStrUtf8z str, SwStrUtf8z a1, SwStrUtf8z a2, SwStrUtf8z a3, SwStrUtf8z a4, SwStrUtf8z a5, SwStrUtf8z a6, SwStrUtf8z a7, SwStrUtf8z a8) { return swStrEqual8(nBytesToCompMax,str,a1)|swStrEqual8(nBytesToCompMax,str,a2)|swStrEqual8(nBytesToCompMax,str,a3)|swStrEqual8(nBytesToCompMax,str,a4)|swStrEqual8(nBytesToCompMax,str,a5)|swStrEqual8(nBytesToCompMax,str,a6)|swStrEqual8(nBytesToCompMax,str,a7)|swStrEqual8(nBytesToCompMax,str,a8); }
 
+SW_PUBL_API_IMPL inline SwBool swStrIsPrintA(SwUsz n, SwStrA str) { SW_DASSERT(n != 0); while (n != 0) { if (!swCharIsPrintA(str[--n])) { return swFALSE; } } return swTRUE; }
+SW_PUBL_API_IMPL inline SwBool swStrIsPrintAz(SwStrAz str) { return swStrIsPrintA(swStrByteLen8z(str), str); }
+
 SW_PUBL_API_IMPL inline SwUsz swStrCountByte8(SwUsz nBytesToScanMax, SwStrUtf8 str, SwU8 byteFind) { SW_DASSERT(byteFind != 0); SwUsz count = 0; for (SwUsz i = 0; i < nBytesToScanMax; ++i) { count += (str[i] == byteFind); if (str[i] == 0) break; } return count; }
 SW_PUBL_API_IMPL inline SwUsz swStrCountByte8z(SwStrUtf8z str, SwU8 byteFind) { SW_DASSERT(byteFind != 0); SwUsz count = 0; do { count += (*str == byteFind); } while (*str++); return count; }
 

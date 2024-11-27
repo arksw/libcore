@@ -23,7 +23,7 @@
 
 // Assert Macros
 #define SW__TRAP() (*(volatile int*)0=0)
-#define SW_ASSERT(cond,...) do { if (!(cond)) { __builtin_printf(__FILE__ ":" SW_TOK_STR(__LINE__) ":0 ::: %s ::: SW_ASSERT( " #cond " )\n", __func__); __builtin_printf("  " __VA_ARGS__); SW__TRAP(); } } while (0)
+#define SW_ASSERT(cond,...) do { if (!(cond)) { __builtin_printf(__FILE__ ":" SW_TOK_STR(__LINE__) ":0 ::: %s ::: ASSERT( " #cond " )\n", __func__); __builtin_printf("  " __VA_ARGS__); SW__TRAP(); } } while (0)
 #define SW_PANIC(...) SW_ASSERT(0,__VA_ARGS__)
 #define SW_UNREACHABLE(...) SW_ASSERT(0,__VA_ARGS__)
 #if SWCC_DEBUG
