@@ -6,7 +6,7 @@
 #include "core_char_api.h"
 #include "core_utf8_api.h"
 
-typedef SwOrZero(SwUsz) SwMatchLenOrZero;
+typedef SwOrZero(SwUsz) SwStrMatchLenOrZero;
 
 SW_PUBL_API_IMPL inline SwUsz swStrByteLen8z(SwStrUtf8z str) { return __builtin_strlen((const char*)str); }
 SW_PUBL_API_IMPL inline SwUsz swStrCodeptLen8z(SwStrUtf8z str) { SwUsz len = 0; while (*str != 0) { SW_DASSERT(swByteIsCodeptUtf8(*str) & !swByteIsContinUtf8(*str)); ++len; str += swByteGetCodeptByteLenUtf8(*str); } return len; }
@@ -70,7 +70,7 @@ SW_PUBL_API_IMPL inline SwOrZero(const SwByteUtf8*) swStrFindStr8  (SwUsz nBytes
     return (const SwU8*)swNULL;
 }
 
-SW_PUBL_API_IMPL inline SwMatchLenOrZero swStrMatchTilNonPrintA(SwStrAz str1, SwStrAz str2) {
+SW_PUBL_API_IMPL inline SwStrMatchLenOrZero swStrMatchTilNonPrintA(SwStrAz str1, SwStrAz str2) {
     SW_DASSERT(str1 && str2 && swCharIsPrintA(*str1) && swCharIsPrintA(*str2));
 
     SwUsz i = 0;
