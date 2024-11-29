@@ -54,7 +54,7 @@ typedef unsigned int       SwU32; SW_ENSURE(sizeof(SwU32) == 4);
 typedef   signed int       SwI32; SW_ENSURE(sizeof(SwI32) == 4);
 typedef unsigned long long SwU64; SW_ENSURE(sizeof(SwU64) == 8);
 typedef   signed long long SwI64; SW_ENSURE(sizeof(SwI64) == 8);
-typedef SwU64  SwUsz; SW_ENSURE(sizeof(SwUsz) >= sizeof(void*));
+typedef SwU64  SwUsz; SW_ENSURE(sizeof(SwUsz) >= sizeof(void*));  // @FIXME: do not assume 64-bits arch
 typedef SwI64  SwIsz; SW_ENSURE(sizeof(SwIsz) >= sizeof(void*));
 typedef float  SwF32; SW_ENSURE(sizeof(SwF32) == 4);
 typedef double SwF64; SW_ENSURE(sizeof(SwF64) == 8);
@@ -77,6 +77,9 @@ typedef SwSlice(const SwByteUtf8,:0)    SwStrUtf8z;  // zero terminated UTF-8 st
 typedef SwSlice(const SwCodeptUtf32,:0) SwStrUtf32z; // zero terminated UTF-32 string, len may or may not be available
 
 // limits
+#define swUMax64(N) (~0llu >> (64-(N)))
+#define swUMax32(N) (~0u >> (32-(N)))
+
 #define swU8_Max  0xFFllu
 #define swU16_Max 0xFFFFllu
 #define swU24_Max 0xFFFFFFllu
@@ -86,6 +89,7 @@ typedef SwSlice(const SwCodeptUtf32,:0) SwStrUtf32z; // zero terminated UTF-32 s
 #define swU48_Max 0xFFFFFFFFFFFFllu
 #define swU56_Max 0xFFFFFFFFFFFFFFllu
 #define swU64_Max 0xFFFFFFFFFFFFFFFFllu
+#define swUsz_Max swU64_Max
 
 // helper macros
 #define SW_MAX(a,b) (((a) > (b)) ? (a) : (b))

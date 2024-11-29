@@ -113,8 +113,8 @@ SW_PUBL_API_IMPL inline SwHashFnv1a64 swHashStr8zFnv1a64(const SwStrUtf8z str) {
 //
 
 // Xor-Folding is a simple process to obtain `N`-bits hashes from their power of two counterparts (used for e.g. to reduce a hash64 to a hash48)
-SW_PUBL_API_IMPL inline SwBound(SwHash64, swBitLo64(N)) swHashXorFold64(SwHash64 hash, SwU64 N_BitsTarget) { SW_DASSERT(N_BitsTarget < 64); SwU64 hiBits = hash >> (64 - N_BitsTarget); return (hiBits ^ hash) & swBitLo64(N_BitsTarget); }
-SW_PUBL_API_IMPL inline SwBound(SwHash32, swBitLo32(N)) swHashXorFold32(SwHash32 hash, SwU32 N_BitsTarget) { SW_DASSERT(N_BitsTarget < 32); SwU64 hiBits = hash >> (32 - N_BitsTarget); return (hiBits ^ hash) & swBitLo32(N_BitsTarget); }
+SW_PUBL_API_IMPL inline SwBound(SwHash64, swUMax64(N)) swHashXorFold64(SwHash64 hash, SwU64 N_BitsTarget) { SW_DASSERT(N_BitsTarget > 0 && N_BitsTarget < 64); SwU64 hiBits = hash >> (64 - N_BitsTarget); return (hiBits ^ hash) & swBitLo64(N_BitsTarget); }
+SW_PUBL_API_IMPL inline SwBound(SwHash32, swUMax32(N)) swHashXorFold32(SwHash32 hash, SwU32 N_BitsTarget) { SW_DASSERT(N_BitsTarget > 0 && N_BitsTarget < 32); SwU64 hiBits = hash >> (32 - N_BitsTarget); return (hiBits ^ hash) & swBitLo32(N_BitsTarget); }
 
 
 #endif  // SW_CORE_HASH_API_H_

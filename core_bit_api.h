@@ -11,8 +11,8 @@ typedef SwU64 SwBitset64;
 #define swBitSizeOf(x) (sizeof(x)<<3)
 #define swBitsetContains(s1,s2) (((s1)&(s2))==(s2))
 
-SW_PUBL_API_IMPL inline SwU32 swBitLo32(SwU32 n) { SW_DASSERT(n < 32); return ((SwU32)1 << n) - 1; }
-SW_PUBL_API_IMPL inline SwU32 swBitHi32(SwU32 n) { return swBitLo32(n) << (32 - n); }
+SW_PUBL_API_IMPL inline SwU32 swBitLo32(SwU32 N) { return (~((SwU32)0)) >> (32 - N); }
+SW_PUBL_API_IMPL inline SwU32 swBitHi32(SwU32 N) { return (~((SwU32)0)) << (32 - N); }
 SW_PUBL_API_IMPL inline SwU32 swBitSum32(SwU32 u) { return __builtin_popcount(u); }
 SW_PUBL_API_IMPL inline SwU32 swBitClz32(SwU32 u) { SW_DASSERT(u != 0); return __builtin_clz(u); }
 SW_PUBL_API_IMPL inline SwU32 swBitCtz32(SwU32 u) { SW_DASSERT(u != 0); return __builtin_ctz(u); }
@@ -23,8 +23,8 @@ SW_PUBL_API_IMPL inline SwU32 swBitReadLE32(const SwU8* bp) { return swBitPackLE
 SW_PUBL_API_IMPL inline void swBitWriteBE32(mutable SwU8* bp, SwU32 u) { bp[0]=(u>>24); bp[1]=(u>>16)&0xFF; bp[2]=(u>>8)&0xFF; bp[3]=u&0xFF; }
 SW_PUBL_API_IMPL inline void swBitWriteLE32(mutable SwU8* bp, SwU32 u) { bp[3]=(u>>24); bp[2]=(u>>16)&0xFF; bp[1]=(u>>8)&0xFF; bp[0]=u&0xFF; }
 
-SW_PUBL_API_IMPL inline SwU64 swBitLo64(SwU64 n) { SW_DASSERT(n < 64); return ((SwU64)1 << n) - 1; }
-SW_PUBL_API_IMPL inline SwU64 swBitHi64(SwU64 n) { return swBitLo64(n) << (64 - n); }
+SW_PUBL_API_IMPL inline SwU64 swBitLo64(SwU64 N) { return (~((SwU64)0)) >> (64 - N); }
+SW_PUBL_API_IMPL inline SwU64 swBitHi64(SwU64 N) { return (~((SwU64)0)) << (64 - N); }
 SW_PUBL_API_IMPL inline SwUsz swBitSum64(SwU64 u) { return __builtin_popcountll(u); }
 SW_PUBL_API_IMPL inline SwUsz swBitClz64(SwU64 u) { SW_DASSERT(u != 0); return __builtin_clzll(u); }
 SW_PUBL_API_IMPL inline SwUsz swBitCtz64(SwU64 u) { SW_DASSERT(u != 0); return __builtin_ctzll(u); }
