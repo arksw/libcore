@@ -9,6 +9,9 @@
 #define SW_PRIV_API_DECL static
 #define SW_PRIV_API_IMPL static
 
+// Used to make explicit the default behavior of C switch arms. Usage of fallthrough is generally discouraged, but if needed, explicit is better than implicit.
+#define SW_FALLTHROUGH
+
 // The counterpart to the `const` keyword, it exists for the sake of explicitness. Its use is recommended only within a function's signature. 
 #define mutable
 
@@ -20,10 +23,14 @@
 #define SW__VA_COUNT(a1,a2,a3,a4,a5,a6,a7,a8,count,...) count
 #define SW_VA_COUNT(...) SW__VA_COUNT(__VA_ARGS__,8,7,6,5,4,3,2,1)
 #define SW_ARR_COUNT(arr) (sizeof(arr)/sizeof(*(arr)))
+#define SW_OFFSET_OF(T,member) ((SwUsz)((SwU8*)&((T*)0)->member - (SwU8*)0))
 
 // Assert Macros
+#define SW_LIKELY(x)   (__builtin_expect(!!(x), 1))
+#define SW_UNLIKELY(x) (__builtin_expect(!!(x), 0))
+
 #define SW__TRAP() (*(volatile int*)0=0)
-#define SW_ASSERT(cond,...) do { if (!(cond)) { __builtin_printf(__FILE__ ":" SW_TOK_STR(__LINE__) ":0 ::: %s ::: ASSERT( " #cond " )\n", __func__); __builtin_printf("  " __VA_ARGS__); SW__TRAP(); } } while (0)
+#define SW_ASSERT(cond,...) do { if SW_UNLIKELY(!(cond)) { __builtin_printf(__FILE__ ":" SW_TOK_STR(__LINE__) ":0 ::: %s ::: ASSERT( " #cond " )\n", __func__); __builtin_printf("  " __VA_ARGS__); SW__TRAP(); } } while (0)
 #define SW_PANIC(...) SW_ASSERT(0,__VA_ARGS__)
 #define SW_UNREACHABLE(...) SW_ASSERT(0,__VA_ARGS__)
 #if SWCC_DEBUG
@@ -36,7 +43,11 @@
 #define SW_BIMPLY(propA,propB) (SW_IMPLY(propA,propB) && SW_IMPLY(propB,propA))
 
 // Constants
+#if __clang__  // clang complains about void* cast, but literal 0 is somehow exempted
+#define swNULL (0)
+#else
 #define swNULL ((void*)0)
+#endif
 enum { swFALSE = 0, swTRUE = 1 };
 enum { swFAIL  = 0, swSUCC = 1 };
 
@@ -81,13 +92,19 @@ typedef SwSlice(const SwCodeptUtf32,:0) SwStrUtf32z; // zero terminated UTF-32 s
 #define swUMax32(N) (~0u >> (32-(N)))
 
 #define swU8_Max  0xFFllu
+#define swU12_Max 0xFFFllu
 #define swU16_Max 0xFFFFllu
+#define swU20_Max 0xFFFFFllu
 #define swU24_Max 0xFFFFFFllu
+#define swU28_Max 0xFFFFFFFllu
 #define swU32_Max 0xFFFFFFFFllu
 #define swU36_Max 0xFFFFFFFFFllu
 #define swU40_Max 0xFFFFFFFFFFllu
+#define swU44_Max 0xFFFFFFFFFFFllu
 #define swU48_Max 0xFFFFFFFFFFFFllu
+#define swU52_Max 0xFFFFFFFFFFFFFllu
 #define swU56_Max 0xFFFFFFFFFFFFFFllu
+#define swU60_Max 0xFFFFFFFFFFFFFFFllu
 #define swU64_Max 0xFFFFFFFFFFFFFFFFllu
 #define swUsz_Max swU64_Max
 
