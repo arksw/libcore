@@ -6,10 +6,6 @@
 #define SWCC_DEBUG 1
 #endif
 
-#ifndef SWCC_VERBOSE
-#define SWCC_VERBOSE 0
-#endif
-
 #ifndef SWCC_TESTING
 #define SWCC_TESTING 1
 #endif
