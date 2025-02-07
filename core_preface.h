@@ -87,6 +87,32 @@ typedef SwSlice(const SwCharA,:0)       SwStrAz;     // zero terminated ASCII st
 typedef SwSlice(const SwByteUtf8,:0)    SwStrUtf8z;  // zero terminated UTF-8 string, len may or may not be available
 typedef SwSlice(const SwCodeptUtf32,:0) SwStrUtf32z; // zero terminated UTF-32 string, len may or may not be available
 
+// fixed size strings for common power of two sizes
+typedef union { SwU8 strNb[4]; SwU8 str[4]; } SwStr4bA;
+typedef union { SwU8 strNb[8]; SwU8 str[8]; } SwStr8bA;
+typedef union { SwU8 strNb[16]; SwU8 str[16]; } SwStr16bA;
+typedef union { SwU8 strNb[32]; SwU8 str[32]; } SwStr32bA;
+typedef union { SwU8 strNb[64]; SwU8 str[64]; } SwStr64bA;
+typedef union { SwU8 strNb[128]; SwU8 str[128]; } SwStr128bA;
+typedef union { SwU8 strNb[256]; SwU8 str[256]; } SwStr256bA;
+typedef union { SwU8 strNb[512]; SwU8 str[512]; } SwStr512bA;
+
+typedef union { SwU8 strNb[4]; SwU8 str[4]; } SwStr4bUtf8;
+typedef union { SwU8 strNb[8]; SwU8 str[8]; } SwStr8bUtf8;
+typedef union { SwU8 strNb[16]; SwU8 str[16]; } SwStr16bUtf8;
+typedef union { SwU8 strNb[32]; SwU8 str[32]; } SwStr32bUtf8;
+typedef union { SwU8 strNb[64]; SwU8 str[64]; } SwStr64bUtf8;
+typedef union { SwU8 strNb[128]; SwU8 str[128]; } SwStr128bUtf8;
+typedef union { SwU8 strNb[256]; SwU8 str[256]; } SwStr256bUtf8;
+typedef union { SwU8 strNb[512]; SwU8 str[512]; } SwStr512bUtf8;
+
+// variably sized strings store their own byte lengths alongside a ptr
+// NOTE: the hypothetical zero terminator should never appear before the `byteLen` bytes,
+//       however, it does not have to appear right past it either, the str may or may not even be zero terminated!
+//       this is typically use-case specific, consider typedef a new str type, if code needs to rely on zero terminator.
+typedef struct { union { SwUsz byteLen; SwUsz len; }; SwStrA str; } SwLStrA;
+typedef struct { union { SwUsz byteLen; };  SwStrUtf8 str; } SwLStrUtf8;
+
 // limits
 #define swUMax64(N) (~0llu >> (64-(N)))
 #define swUMax32(N) (~0u >> (32-(N)))
@@ -133,5 +159,10 @@ typedef SwSlice(const SwCodeptUtf32,:0) SwStrUtf32z; // zero terminated UTF-32 s
 #define SW_SPREAD2(s) s[0],s[1]
 #define SW_SPREAD4(s) s[0],s[1],s[2],s[3]
 #define SW_SPREAD8(s) s[0],s[1],s[2],s[3],s[4],s[5],s[6],s[7]
+
+#define SW_STR_UNPACK8z(s) (unsigned)swStrByteLen8z((SwStrUtf8z)s), (const char*)(s)
+#define SW_STR_UNPACK(s) swStrNbOrLStr__ByteLen(s), (const char*)(s->str)
+#define swStrNbOrLStr__ByteLen(s) ((sizeof(*s)==sizeof(s->str)) ? ((SwUsz)swStrNbByteLenOrCap8z(s)) : ((SwUsz)((SwLStrUtf8*)s)->byteLen))
+#define swStrNbByteLenOrCap8z(s) swStrByteLenOrCap8z(sizeof(s->strNb), s->strNb)
 
 #endif  // SW_CORE_PREFACE_H_
