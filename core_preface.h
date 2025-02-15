@@ -30,13 +30,15 @@
 #define SW_UNLIKELY(x) (__builtin_expect(!!(x), 0))
 
 #define SW__TRAP() (*(volatile int*)0=0)
-#define SW_ASSERT(cond,...) do { if SW_UNLIKELY(!(cond)) { __builtin_printf(__FILE__ ":" SW_TOK_STR(__LINE__) ":0 ::: %s ::: ASSERT( " #cond " )\n", __func__); __builtin_printf("  " __VA_ARGS__); SW__TRAP(); } } while (0)
+#define SW_ASSERT(cond,...) do { if SW_UNLIKELY(!(cond)) { __builtin_printf(__FILE__ ":" SW_TOK_STR(__LINE__) ":0 ::: %s ::: ASSERT( " #cond " )\n", __func__); __builtin_printf("  " __VA_ARGS__); __builtin_printf("\n\n"); SW__TRAP(); } } while (0)
 #define SW_PANIC(...) SW_ASSERT(0,__VA_ARGS__)
 #define SW_UNREACHABLE(...) SW_ASSERT(0,__VA_ARGS__)
 #if SWCC_DEBUG
 #define SW_DASSERT(cond,...) SW_ASSERT(cond, __VA_ARGS__)
+#define SW_DEXPAND(...) __VA_ARGS__
 #else
 #define SW_DASSERT(cond,...) (void)0
+#define SW_DEXPAND(...)
 #endif
 #define SW_ENSURE(cond,...) typedef int SW_TOK_CAT2(sw__ensure_line_,__LINE__)[(cond) ? 1 : -1]
 #define SW_IMPLY(cond,then) ((!(cond)) || (then))
