@@ -12,7 +12,7 @@
 // Used to make explicit the default behavior of C switch arms. Usage of fallthrough is generally discouraged, but if needed, explicit is better than implicit.
 #define SW_FALLTHROUGH
 
-// The counterpart to the `const` keyword, it exists for the sake of explicitness. Its use is recommended only within a function's signature. 
+// The counterpart to the `const` keyword, it exists for explicitly signaling a mutation. Its use is recommended only within a function's signature. 
 #define mutable
 
 // Preprocessor Macros
@@ -29,23 +29,25 @@
 #define SW_LIKELY(x)   (__builtin_expect(!!(x), 1))
 #define SW_UNLIKELY(x) (__builtin_expect(!!(x), 0))
 
-#define SW__TRAP() (*(volatile int*)0=0)
+#define SW__TRAP() __builtin_trap()
 #define SW_ASSERT(cond,...) do { if SW_UNLIKELY(!(cond)) { __builtin_printf(__FILE__ ":" SW_TOK_STR(__LINE__) ":0 ::: %s ::: ASSERT( " #cond " )\n", __func__); __builtin_printf("  " __VA_ARGS__); __builtin_printf("\n\n"); SW__TRAP(); } } while (0)
 #define SW_PANIC(...) SW_ASSERT(0,__VA_ARGS__)
 #define SW_UNREACHABLE(...) SW_ASSERT(0,__VA_ARGS__)
 #if SWCC_DEBUG
 #define SW_DASSERT(cond,...) SW_ASSERT(cond, __VA_ARGS__)
 #define SW_DEXPAND(...) __VA_ARGS__
+#define SW_DEXPAND_OR_1st(arg1st,...) __VA_ARGS__
 #else
 #define SW_DASSERT(cond,...) (void)0
 #define SW_DEXPAND(...)
+#define SW_DEXPAND_OR_1st(arg1st,...) arg1st
 #endif
 #define SW_ENSURE(cond,...) typedef int SW_TOK_CAT2(sw__ensure_line_,__LINE__)[(cond) ? 1 : -1]
 #define SW_IMPLY(cond,then) ((!(cond)) || (then))
 #define SW_BIMPLY(propA,propB) (SW_IMPLY(propA,propB) && SW_IMPLY(propB,propA))
 
 // Constants
-#if __clang__  // clang complains about void* cast, but literal 0 is somehow exempted
+#if __clang__ // clang complains about void* cast, but literal 0 is somehow exempted
 #define swNULL (0)
 #else
 #define swNULL ((void*)0)
@@ -167,4 +169,4 @@ typedef struct { union { SwUsz byteLen; };  SwStrUtf8 str; } SwLStrUtf8;
 #define swStrNbOrLStr__ByteLen(s) ((sizeof(*s)==sizeof(s->str)) ? ((SwUsz)swStrNbByteLenOrCap8z(s)) : ((SwUsz)((SwLStrUtf8*)s)->byteLen))
 #define swStrNbByteLenOrCap8z(s) swStrByteLenOrCap8z(sizeof(s->strNb), s->strNb)
 
-#endif  // SW_CORE_PREFACE_H_
+#endif // SW_CORE_PREFACE_H_
