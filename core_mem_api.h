@@ -20,4 +20,4 @@ SW_PUBL_API_IMPL inline SwOrZero(const SwU8*) swMemFindMem(SwUsz nBytesToScan, c
 SW_PUBL_API_IMPL inline SwOrZero(const SwU8*) swMemFindByte(SwUsz nBytesToScan, const SwU8* memScan, SwU8 byteFind) { SW_DASSERT(memScan); return (const SwU8*)__builtin_memchr(memScan, byteFind, nBytesToScan); }
 SW_PUBL_API_IMPL inline SwOrZero(const SwU8*) swMemFindZero(SwUsz nBytesToScan, const SwU8* memScan) { return (const SwU8*)swMemFindByte(nBytesToScan, memScan, 0); }
 
-#endif  // SW_CORE_MEM_API_H_
+#endif // SW_CORE_MEM_API_H_

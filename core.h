@@ -15,4 +15,4 @@
 #include "core_hash_api.h"
 #include "core_os_api.h"
 
-#endif  // SW_CORE_H_
+#endif // SW_CORE_H_

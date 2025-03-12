@@ -55,4 +55,4 @@ SW_PUBL_API_IMPL inline void     swBitSetFw64LSb0(SwU64 bitSize, mutable SwU64* 
     bitArr64s[slotIndex] = (bitArr64s[slotIndex] & ~clearMask) | (bitValue << bitOffset); 
 }
 
-#endif  // SW_BIT_API_H_
+#endif // SW_BIT_API_H_

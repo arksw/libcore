@@ -10,4 +10,4 @@
 } while (0)
 
 
-#endif  // SW_CORE_ARR_API_H_
+#endif // SW_CORE_ARR_API_H_

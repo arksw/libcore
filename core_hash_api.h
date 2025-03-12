@@ -117,4 +117,4 @@ SW_PUBL_API_IMPL inline SwBound(SwHash64, swUMax64(N)) swHashXorFold64(SwHash64 
 SW_PUBL_API_IMPL inline SwBound(SwHash32, swUMax32(N)) swHashXorFold32(SwHash32 hash, SwU32 N_BitsTarget) { SW_DASSERT(N_BitsTarget > 0 && N_BitsTarget < 32); SwU64 hiBits = hash >> (32 - N_BitsTarget); return (hiBits ^ hash) & swBitLo32(N_BitsTarget); }
 
 
-#endif  // SW_CORE_HASH_API_H_
+#endif // SW_CORE_HASH_API_H_

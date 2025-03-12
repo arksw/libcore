@@ -9,4 +9,4 @@ SW_PUBL_API_IMPL inline SwIterRange swIterRangeForward(SwUsz n) { return (SwIter
 SW_PUBL_API_IMPL inline SwIterRange swIterRangeBackward(SwUsz n) { return (SwIterRange){ n-1, -1 }; }
 
 
-#endif  // SW_CORE_ITER_API_H_
+#endif // SW_CORE_ITER_API_H_

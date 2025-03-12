@@ -15,4 +15,4 @@
 // #pragma clang diagnostic ignored "-Wvoid-pointer-to-int-cast"
 // #endif
 
-#endif  // SW_CORE_CCFLAGS_H_
+#endif // SW_CORE_CCFLAGS_H_

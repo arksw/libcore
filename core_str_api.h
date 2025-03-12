@@ -71,35 +71,35 @@ SW_PUBL_API_IMPL inline SwOrZero(const SwByteUtf8*) swStrFindStr8  (SwUsz nBytes
     return (const SwU8*)swNULL;
 }
 
-SW_PUBL_API_IMPL inline SwStrMatchLenOrZero swStrMatchTilNonPrintA(SwStrAz str1, SwStrAz str2) {
-    SW_DASSERT(str1 && str2 && swByteIsApproxPrint(*str1) && swByteIsApproxPrint(*str2));
+SW_PUBL_API_IMPL inline SwStrMatchLenOrZero swStrMatchTilNonPrintA(SwStrA str1, SwStrA str2) {
+    SW_DASSERT(str1 && str2 && swCharIsApproxPrint(*str1) && swCharIsApproxPrint(*str2));
 
     SwUsz i = 0;
     SwBool isPri1;
     SwBool isPri2;
 
     do {
-        SW_DASSERT(str1 && str2 && swByteIsApproxPrint(*str1) && swByteIsApproxPrint(*str2));
-        if (str1[i] ^ str2[i]) { return 0; }  // return false on mismatch
+        SW_DASSERT(str1 && str2 && swCharIsApproxPrint(*str1) && swCharIsApproxPrint(*str2));
+        if (str1[i] ^ str2[i]) { return 0; } // return false on mismatch
         ++i;
-        isPri1 = swByteIsApproxPrint(str1[i]);
-        isPri2 = swByteIsApproxPrint(str2[i]);
-    } while (isPri1 & isPri2);  // breaks as soon as even one is a non printable (which includes e.g. spaces and '\0')
+        isPri1 = swCharIsApproxPrint(str1[i]);
+        isPri2 = swCharIsApproxPrint(str2[i]);
+    } while (isPri1 & isPri2); // breaks as soon as even one is a non printable (which includes e.g. spaces and '\0')
 
     // either:
     // - we have a mismatch <== str1[i-1] or str2[i-1] is outside the printable ascii range since we broke out of the loop
     // - we have a match <== both str1[i-1] and str2[i-1] must be outside the printable ascii range (i.e. they "terminate" at the same char), and til `i` i.e. chars [0..i) we had a match)
     return (!isPri1 & !isPri2) * i;
 }
-SW_PUBL_API_IMPL inline SwBool swStrIsMatchTilNonPrintA(SwStrAz str1, SwStrAz str2) {
+SW_PUBL_API_IMPL inline SwBool swStrIsMatchTilNonPrintA(SwStrA str1, SwStrA str2) {
     return swStrMatchTilNonPrintA(str1, str2) > 0;
 }
 SW_PRIV_API_IMPL inline SwStr128bA swStrFmtBinaryA(SwU64 value, SwCharA sepChar, SwBitset64 sepPattern) {
-    SW_DASSERT(sepPattern != swU64_Max);  // would overflow 128b cap (64 bin digits + 64 separators + 0 terminator = 129b)
+    SW_DASSERT(sepPattern != swU64_Max); // would overflow 128b cap (64 bin digits + 64 separators + 0 terminator = 129b)
     
     SwStr128bA out;
-    SwUsz r = 63;  // bit index (read)
-    SwUsz w =  0;  // char index (write)
+    SwUsz r = 63; // bit index (read)
+    SwUsz w =  0; // char index (write)
 
     do {
         out.str[w] = sepChar;
@@ -114,4 +114,4 @@ SW_PRIV_API_IMPL inline SwStr128bA swStrFmtBinaryA(SwU64 value, SwCharA sepChar,
     return out;
 }
 
-#endif  // SW_CORE_STR_API_H_
+#endif // SW_CORE_STR_API_H_
