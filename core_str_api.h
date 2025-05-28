@@ -52,7 +52,6 @@ SW_PUBL_API_IMPL inline SwUsz swStrCountByte8z(SwStrUtf8z str, SwU8 byteFind) { 
 
 SW_PUBL_API_IMPL inline SwOrZero(const SwByteUtf8*) swStrFindByte8z(SwStrUtf8z str, SwU8 byteFind) { do { if (*str == byteFind) { return str; } } while (*str++); return (const SwU8*)swNULL; }
 SW_PUBL_API_IMPL inline SwOrZero(const SwByteUtf8*) swStrFindByte8 (SwUsz nBytesToScanMax, SwStrUtf8 str, SwU8 byteFind) { for (SwUsz i = 0; i < nBytesToScanMax; ++i) { if (str[i] == byteFind) { return &str[i]; } if (str[i] == 0) { return (const SwU8*)swNULL; } } return (const SwU8*)swNULL; }
-SW_PUBL_API_IMPL inline SwOrZero(const SwByteUtf8*) swStrFindStr8z (SwStrUtf8z str, SwStrUtf8z strFind) { return (const SwU8*)__builtin_strstr((const char*)str, (const char*)strFind); }
 SW_PUBL_API_IMPL inline SwOrZero(const SwByteUtf8*) swStrFindStr8  (SwUsz nBytesToScanMax, SwStrUtf8 str, SwUsz nBytesInStrFind, SwStrUtf8 strFind) {
     const SwByteUtf8* earlyZeroTerm = swStrFindByte8(nBytesInStrFind, strFind, 0);
     nBytesInStrFind = earlyZeroTerm ? (earlyZeroTerm - strFind) : nBytesInStrFind;
@@ -70,16 +69,15 @@ SW_PUBL_API_IMPL inline SwOrZero(const SwByteUtf8*) swStrFindStr8  (SwUsz nBytes
     }
     return (const SwU8*)swNULL;
 }
-
+SW_PUBL_API_IMPL inline SwOrZero(const SwByteUtf8*) swStrFindStr8z (SwStrUtf8z str, SwStrUtf8z strFind) { return swStrFindStr8(swStrByteLen8z(str), str, swStrByteLen8z(strFind), strFind); }  //@PERF: avoiding strlen is possible, could also use strstr() but it does not return the beginning of the str match
 SW_PUBL_API_IMPL inline SwStrMatchLenOrZero swStrMatchTilNonPrintA(SwStrA str1, SwStrA str2) {
-    SW_DASSERT(str1 && str2 && swCharIsApproxPrint(*str1) && swCharIsApproxPrint(*str2));
+    SW_DASSERT(str1 && str2);
 
     SwUsz i = 0;
     SwBool isPri1;
     SwBool isPri2;
 
     do {
-        SW_DASSERT(str1 && str2 && swCharIsApproxPrint(*str1) && swCharIsApproxPrint(*str2));
         if (str1[i] ^ str2[i]) { return 0; } // return false on mismatch
         ++i;
         isPri1 = swCharIsApproxPrint(str1[i]);

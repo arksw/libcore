@@ -5,7 +5,7 @@
 
 SW_ENSURE(' ' == 0x20 && '!' == 0x21 && '~' == 0x7E, "ensure char literals are ASCII"); // @FIXME: we can make this exhaustive
 
-#define swCharIsAnyA(chr,...) SW_TOK_CAT2(swCharIsAnyA_VA,SW_VA_COUNT(__VA_ARGS__))(__VA_ARGS__)
+#define swCharIsAnyA(chr,...) SW_TOK_CAT2(swCharIsAnyA_VA,SW_VA_COUNT(__VA_ARGS__))(chr,__VA_ARGS__)
 SW_PUBL_API_IMPL inline SwBool swCharIsAnyA_VA1(SwU8 b, SwU8 a1) { return (b==a1); }
 SW_PUBL_API_IMPL inline SwBool swCharIsAnyA_VA2(SwU8 b, SwU8 a1, SwU8 a2) { return (b==a1)|(b==a2); }
 SW_PUBL_API_IMPL inline SwBool swCharIsAnyA_VA3(SwU8 b, SwU8 a1, SwU8 a2, SwU8 a3) { return (b==a1)|(b==a2)|(b==a3); }

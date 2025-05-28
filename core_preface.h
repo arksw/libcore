@@ -20,9 +20,9 @@
 #define SW_TOK_CAT2(a,b) SW__TOK_CAT2(a,b)
 #define SW__TOK_STR(a) #a
 #define SW_TOK_STR(a) SW__TOK_STR(a)
-#define SW__VA_COUNT(a1,a2,a3,a4,a5,a6,a7,a8,count,...) count
-#define SW_VA_COUNT(...) SW__VA_COUNT(__VA_ARGS__,8,7,6,5,4,3,2,1)
-#define SW_ARR_COUNT(arr) (sizeof(arr)/sizeof(*(arr)))
+#define SW__VA_COUNT(a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12,a13,a14,a15,a16,count,...) count
+#define SW_VA_COUNT(...) SW__VA_COUNT(__VA_ARGS__,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1)
+#define SW_ARR_COUNT(arr) (sizeof(arr)/sizeof((arr)[0]))
 #define SW_OFFSET_OF(T,member) ((SwUsz)((SwU8*)&((T*)0)->member - (SwU8*)0))
 
 // Assert Macros
@@ -142,6 +142,7 @@ typedef struct { union { SwUsz byteLen; };  SwStrUtf8 str; } SwLStrUtf8;
 #define SW_MAX(a,b) (((a) > (b)) ? (a) : (b))
 #define SW_MIN(a,b) (((a) < (b)) ? (a) : (b))
 
+#define SW_EQ_ANY1(x,eqA) ((x)==(eqA))
 #define SW_EQ_ANY2(x,eqA,eqB) (((x)==(eqA))|((x)==(eqB)))
 #define SW_EQ_ANY3(x,eqA,eqB,eqC) (((x)==(eqA))|((x)==(eqB))|((x)==(eqC)))
 #define SW_EQ_ANY4(x,eqA,eqB,eqC,eqD) (((x)==(eqA))|((x)==(eqB))|((x)==(eqC))|((x)==(eqD)))
@@ -149,8 +150,21 @@ typedef struct { union { SwUsz byteLen; };  SwStrUtf8 str; } SwLStrUtf8;
 #define SW_EQ_ANY6(x,eqA,eqB,eqC,eqD,eqE,eqF) (((x)==(eqA))|((x)==(eqB))|((x)==(eqC))|((x)==(eqD))|((x)==(eqF)))
 #define SW_EQ_ANY7(x,eqA,eqB,eqC,eqD,eqE,eqF,eqG) (((x)==(eqA))|((x)==(eqB))|((x)==(eqC))|((x)==(eqD))|((x)==(eqF))|((x)==(eqG)))
 #define SW_EQ_ANY8(x,eqA,eqB,eqC,eqD,eqE,eqF,eqG,eqH) (((x)==(eqA))|((x)==(eqB))|((x)==(eqC))|((x)==(eqD))|((x)==(eqF))|((x)==(eqG))|((x)==(eqH)))
+#define SW_EQ_ANY9(x,eqA,eqB,eqC,eqD,eqE,eqF,eqG,eqH,eqI) (((x)==(eqA))|((x)==(eqB))|((x)==(eqC))|((x)==(eqD))|((x)==(eqF))|((x)==(eqG))|((x)==(eqH))|((x)==(eqI)))
 #define SW_EQ_ANY(x,...) SW_TOK_CAT2(SW_EQ_ANY,SW_VA_COUNT(__VA_ARGS__))(x,__VA_ARGS__)
 
+#define SW_EQ_SEQ1(x,eq0) ((x)[0]==(eq0))
+#define SW_EQ_SEQ2(x,eq0,eq1) (((x)[0]==(eq0))|((x)[1]==(eq1)))
+#define SW_EQ_SEQ3(x,eq0,eq1,eq2) (((x)[0]==(eq0))|((x)[1]==(eq1))|((x)[2]==(eq2)))
+#define SW_EQ_SEQ4(x,eq0,eq1,eq2,eq3) (((x)[0]==(eq0))|((x)[1]==(eq1))|((x)[2]==(eq2))|((x)[3]==(eq3)))
+#define SW_EQ_SEQ5(x,eq0,eq1,eq2,eq3,eq4) (((x)[0]==(eq0))|((x)[1]==(eq1))|((x)[2]==(eq2))|((x)[3]==(eq3))|((x)[4]==(eq4)))
+#define SW_EQ_SEQ6(x,eq0,eq1,eq2,eq3,eq4,eq5) (((x)[0]==(eq0))|((x)[1]==(eq1))|((x)[2]==(eq2))|((x)[3]==(eq3))|((x)[4]==(eq4))|((x)[5]==(eq5)))
+#define SW_EQ_SEQ7(x,eq0,eq1,eq2,eq3,eq4,eq5,eq6) (((x)[0]==(eq0))|((x)[1]==(eq1))|((x)[2]==(eq2))|((x)[3]==(eq3))|((x)[4]==(eq4))|((x)[5]==(eq5))|((x)[6]==(eq6)))
+#define SW_EQ_SEQ8(x,eq0,eq1,eq2,eq3,eq4,eq5,eq6,eq7) (((x)[0]==(eq0))|((x)[1]==(eq1))|((x)[2]==(eq2))|((x)[3]==(eq3))|((x)[4]==(eq4))|((x)[5]==(eq5))|((x)[6]==(eq6))|((x)[7]==(eq7)))
+#define SW_EQ_SEQ9(x,eq0,eq1,eq2,eq3,eq4,eq5,eq6,eq7,eq8) (((x)[0]==(eq0))|((x)[1]==(eq1))|((x)[2]==(eq2))|((x)[3]==(eq3))|((x)[4]==(eq4))|((x)[5]==(eq5))|((x)[6]==(eq6))|((x)[7]==(eq7))|((x)[8]==(eq8)))
+#define SW_EQ_SEQ(x,...) SW_TOK_CAT2(SW_EQ_SEQ,SW_VA_COUNT(__VA_ARGS__))(x,__VA_ARGS__)
+
+#define SW_IS_ANY1(x,isA) (isA(x))
 #define SW_IS_ANY2(x,isA,isB) (isA(x)|isB(x))
 #define SW_IS_ANY3(x,isA,isB,isC) (isA(x)|isB(x)|isC(x))
 #define SW_IS_ANY4(x,isA,isB,isC,isD) (isA(x)|isB(x)|isC(x)|isD(x))
@@ -158,11 +172,28 @@ typedef struct { union { SwUsz byteLen; };  SwStrUtf8 str; } SwLStrUtf8;
 #define SW_IS_ANY6(x,isA,isB,isC,isD,isE,isF) (isA(x)|isB(x)|isC(x)|isD(x)|isE(x)|isF(x))
 #define SW_IS_ANY7(x,isA,isB,isC,isD,isE,isF,isG) (isA(x)|isB(x)|isC(x)|isD(x)|isE(x)|isF(x)|isG(x))
 #define SW_IS_ANY8(x,isA,isB,isC,isD,isE,isF,isG,isH) (isA(x)|isB(x)|isC(x)|isD(x)|isE(x)|isF(x)|isG(x)|isH(x))
+#define SW_IS_ANY9(x,isA,isB,isC,isD,isE,isF,isG,isH,isI) (isA(x)|isB(x)|isC(x)|isD(x)|isE(x)|isF(x)|isG(x)|isH(x)|isI(x))
 #define SW_IS_ANY(x,...) SW_TOK_CAT2(SW_IS_ANY,SW_VA_COUNT(__VA_ARGS__))(x,__VA_ARGS__)
 
+#define SW_IS_CONSECUTIVE2(a0,a1) (((a0)+1)==(a1))
+#define SW_IS_CONSECUTIVE3(a0,a1,a2) ((((a0)+1)==(a1))&(((a1)+1)==(a2)))
+#define SW_IS_CONSECUTIVE4(a0,a1,a2,a3) ((((a0)+1)==(a1))&(((a1)+1)==(a2))&(((a2)+1)==(a3)))
+#define SW_IS_CONSECUTIVE5(a0,a1,a2,a3,a4) ((((a0)+1)==(a1))&(((a1)+1)==(a2))&(((a2)+1)==(a3))&(((a3)+1)==(a4)))
+#define SW_IS_CONSECUTIVE6(a0,a1,a2,a3,a4,a5) ((((a0)+1)==(a1))&(((a1)+1)==(a2))&(((a2)+1)==(a3))&(((a3)+1)==(a4))&(((a4)+1)==(a5)))
+#define SW_IS_CONSECUTIVE7(a0,a1,a2,a3,a4,a5,a6) ((((a0)+1)==(a1))&(((a1)+1)==(a2))&(((a2)+1)==(a3))&(((a3)+1)==(a4))&(((a4)+1)==(a5))&(((a5)+1)==(a6)))
+#define SW_IS_CONSECUTIVE8(a0,a1,a2,a3,a4,a5,a6,a7) ((((a0)+1)==(a1))&(((a1)+1)==(a2))&(((a2)+1)==(a3))&(((a3)+1)==(a4))&(((a4)+1)==(a5))&(((a5)+1)==(a6))&(((a6)+1)==(a7)))
+#define SW_IS_CONSECUTIVE9(a0,a1,a2,a3,a4,a5,a6,a7,a8) ((((a0)+1)==(a1))&(((a1)+1)==(a2))&(((a2)+1)==(a3))&(((a3)+1)==(a4))&(((a4)+1)==(a5))&(((a5)+1)==(a6))&(((a6)+1)==(a7))&(((a7)+1)==(a8)))
+#define SW_IS_CONSECUTIVE(...) SW_TOK_CAT2(SW_IS_CONSECUTIVE,SW_VA_COUNT(__VA_ARGS__))(__VA_ARGS__)
+
+#define SW_SPREAD1(s) s[0]
 #define SW_SPREAD2(s) s[0],s[1]
+#define SW_SPREAD3(s) s[0],s[1],s[2]
 #define SW_SPREAD4(s) s[0],s[1],s[2],s[3]
+#define SW_SPREAD5(s) s[0],s[1],s[2],s[3],s[4]
+#define SW_SPREAD6(s) s[0],s[1],s[2],s[3],s[4],s[5]
+#define SW_SPREAD7(s) s[0],s[1],s[2],s[3],s[4],s[5],s[6]
 #define SW_SPREAD8(s) s[0],s[1],s[2],s[3],s[4],s[5],s[6],s[7]
+#define SW_SPREAD9(s) s[0],s[1],s[2],s[3],s[4],s[5],s[6],s[7],s[8]
 
 #define SW_STR_UNPACK8z(s) (unsigned)swStrByteLen8z((SwStrUtf8z)s), (const char*)(s)
 #define SW_STR_UNPACK(s) swStrNbOrLStr__ByteLen(s), (const char*)(s->str)
