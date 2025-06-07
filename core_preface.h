@@ -21,7 +21,7 @@
 #define SW__TOK_STR(a) #a
 #define SW_TOK_STR(a) SW__TOK_STR(a)
 #define SW__VA_COUNT(a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12,a13,a14,a15,a16,count,...) count
-#define SW_VA_COUNT(...) SW__VA_COUNT(__VA_ARGS__,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1)
+#define SW_VA_COUNT(...) SW__VA_COUNT(__VA_ARGS__,16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1,0)
 #define SW_ARR_COUNT(arr) (sizeof(arr)/sizeof((arr)[0]))
 #define SW_OFFSET_OF(T,member) ((SwUsz)((SwU8*)&((T*)0)->member - (SwU8*)0))
 
@@ -147,10 +147,10 @@ typedef struct { union { SwUsz byteLen; };  SwStrUtf8 str; } SwLStrUtf8;
 #define SW_EQ_ANY3(x,eqA,eqB,eqC) (((x)==(eqA))|((x)==(eqB))|((x)==(eqC)))
 #define SW_EQ_ANY4(x,eqA,eqB,eqC,eqD) (((x)==(eqA))|((x)==(eqB))|((x)==(eqC))|((x)==(eqD)))
 #define SW_EQ_ANY5(x,eqA,eqB,eqC,eqD,eqE) (((x)==(eqA))|((x)==(eqB))|((x)==(eqC))|((x)==(eqD))|((x)==(eqE)))
-#define SW_EQ_ANY6(x,eqA,eqB,eqC,eqD,eqE,eqF) (((x)==(eqA))|((x)==(eqB))|((x)==(eqC))|((x)==(eqD))|((x)==(eqF)))
-#define SW_EQ_ANY7(x,eqA,eqB,eqC,eqD,eqE,eqF,eqG) (((x)==(eqA))|((x)==(eqB))|((x)==(eqC))|((x)==(eqD))|((x)==(eqF))|((x)==(eqG)))
-#define SW_EQ_ANY8(x,eqA,eqB,eqC,eqD,eqE,eqF,eqG,eqH) (((x)==(eqA))|((x)==(eqB))|((x)==(eqC))|((x)==(eqD))|((x)==(eqF))|((x)==(eqG))|((x)==(eqH)))
-#define SW_EQ_ANY9(x,eqA,eqB,eqC,eqD,eqE,eqF,eqG,eqH,eqI) (((x)==(eqA))|((x)==(eqB))|((x)==(eqC))|((x)==(eqD))|((x)==(eqF))|((x)==(eqG))|((x)==(eqH))|((x)==(eqI)))
+#define SW_EQ_ANY6(x,eqA,eqB,eqC,eqD,eqE,eqF) (((x)==(eqA))|((x)==(eqB))|((x)==(eqC))|((x)==(eqD))|((x)==(eqE))|((x)==(eqF)))
+#define SW_EQ_ANY7(x,eqA,eqB,eqC,eqD,eqE,eqF,eqG) (((x)==(eqA))|((x)==(eqB))|((x)==(eqC))|((x)==(eqD))|((x)==(eqE))|((x)==(eqF))|((x)==(eqG)))
+#define SW_EQ_ANY8(x,eqA,eqB,eqC,eqD,eqE,eqF,eqG,eqH) (((x)==(eqA))|((x)==(eqB))|((x)==(eqC))|((x)==(eqD))|((x)==(eqE))|((x)==(eqF))|((x)==(eqG))|((x)==(eqH)))
+#define SW_EQ_ANY9(x,eqA,eqB,eqC,eqD,eqE,eqF,eqG,eqH,eqI) (((x)==(eqA))|((x)==(eqB))|((x)==(eqC))|((x)==(eqD))|((x)==(eqE))|((x)==(eqF))|((x)==(eqG))|((x)==(eqH))|((x)==(eqI)))
 #define SW_EQ_ANY(x,...) SW_TOK_CAT2(SW_EQ_ANY,SW_VA_COUNT(__VA_ARGS__))(x,__VA_ARGS__)
 
 #define SW_EQ_SEQ1(x,eq0) ((x)[0]==(eq0))
