@@ -10,7 +10,7 @@ typedef SwOrZero(SwUsz) SwStrMatchLenOrZero;
 
 SW_PUBL_API_IMPL inline SwUsz swStrByteLen8z(SwStrUtf8z str) { return __builtin_strlen((const char*)str); }
 SW_PUBL_API_IMPL inline SwUsz swStrByteLenOrCap8z(SwUsz cap, const SwU8* str) { SwUsz n = 0; while (n < cap && str[n] != 0) { ++n; } return n; }
-SW_PUBL_API_IMPL inline SwUsz swStrCodeptLen8z(SwStrUtf8z str) { SwUsz len = 0; while (*str != 0) { SW_DASSERT(swByteIsCodeptUtf8(*str) & !swByteIsContinUtf8(*str)); ++len; str += swByteGetCodeptByteLenUtf8(*str); } return len; }
+SW_PUBL_API_IMPL inline SwUsz swStrCodeptLen8z(SwStrUtf8z str) { SwUsz len = 0; while (*str != 0) { SW_DASSERT(swByteIsBoCodeptUtf8(*str) & !swByteIsContinUtf8(*str)); ++len; str += swByteGetCodeptByteLenUtf8(*str); } return len; }
 
 SW_PUBL_API_IMPL inline SwIsz swStrCompare8z(SwStrUtf8z str1, SwStrUtf8z str2) { return __builtin_strcmp((const char*)str1, (const char*)str2); }
 SW_PUBL_API_IMPL inline SwBool  swStrEqual8z(SwStrUtf8z str1, SwStrUtf8z str2) { return swStrCompare8z(str1, str2) == 0; }

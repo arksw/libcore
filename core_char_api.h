@@ -20,6 +20,7 @@ SW_PUBL_API_IMPL inline SwBool swCharIsNonPrintA(SwU8 b) { return (b <= ' ') | (
 SW_PUBL_API_IMPL inline SwBool swCharIsPrintA(SwU8 b) { return swCharInRangeA(b, '!','~'); } // printable ASCII range (note how this is exactly the complementary set of the above if and only if the input is guaranteed to be in the ASCII U7 range)
 SW_PUBL_API_IMPL inline SwBool swCharIsApproxPrint(SwU8 b) { return !swCharIsNonPrintA(b); } // technically input byte could even be invalid UTF8 (or non printable UTF8) but, here, anything not NonPrintA is considered "approximately printable"
 SW_PUBL_API_IMPL inline SwBool swCharIsDigitA(SwU8 b) { return swCharInRangeA(b, '0','9'); }
+SW_PUBL_API_IMPL inline SwOrZero(SwU8) swCharToDigitHexOffsetA(SwU8 b) { return swCharInRangeA(b, '0','9') ? '0' : swCharInRangeA(b, 'A','F') ? 'A' : swCharInRangeA(b, 'a','f') ? 'a' : 0; }
 SW_PUBL_API_IMPL inline SwBool swCharIsDigitHexA(SwU8 b) { return swCharInRangeA(b, '0','9') | swCharInRangeA(b, 'A','F') | swCharInRangeA(b, 'a','f'); }
 SW_PUBL_API_IMPL inline SwBool swCharIsDigitOctA(SwU8 b) { return swCharInRangeA(b, '0','7'); }
 SW_PUBL_API_IMPL inline SwBool swCharIsDigitBinA(SwU8 b) { return swCharInRangeA(b, '0','1'); }
