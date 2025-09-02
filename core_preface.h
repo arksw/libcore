@@ -184,6 +184,7 @@ typedef struct { union { SwUsz byteLen; };  SwStrUtf8 str; } SwLStrUtf8;
 #define SW_IS_CONSECUTIVE7(a0,a1,a2,a3,a4,a5,a6) ((((a0)+1)==(a1))&(((a1)+1)==(a2))&(((a2)+1)==(a3))&(((a3)+1)==(a4))&(((a4)+1)==(a5))&(((a5)+1)==(a6)))
 #define SW_IS_CONSECUTIVE8(a0,a1,a2,a3,a4,a5,a6,a7) ((((a0)+1)==(a1))&(((a1)+1)==(a2))&(((a2)+1)==(a3))&(((a3)+1)==(a4))&(((a4)+1)==(a5))&(((a5)+1)==(a6))&(((a6)+1)==(a7)))
 #define SW_IS_CONSECUTIVE9(a0,a1,a2,a3,a4,a5,a6,a7,a8) ((((a0)+1)==(a1))&(((a1)+1)==(a2))&(((a2)+1)==(a3))&(((a3)+1)==(a4))&(((a4)+1)==(a5))&(((a5)+1)==(a6))&(((a6)+1)==(a7))&(((a7)+1)==(a8)))
+#define SW_IS_CONSECUTIVE10(a0,a1,a2,a3,a4,a5,a6,a7,a8,a9) ((((a0)+1)==(a1))&(((a1)+1)==(a2))&(((a2)+1)==(a3))&(((a3)+1)==(a4))&(((a4)+1)==(a5))&(((a5)+1)==(a6))&(((a6)+1)==(a7))&(((a7)+1)==(a8))&(((a8)+1)==(a9)))
 #define SW_IS_CONSECUTIVE(...) SW_TOK_CAT2(SW_IS_CONSECUTIVE,SW_VA_COUNT(__VA_ARGS__))(__VA_ARGS__)
 
 #define SW_SPREAD1(s) s[0]
