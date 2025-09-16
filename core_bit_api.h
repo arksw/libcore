@@ -8,9 +8,6 @@ typedef SwU16 SwBitset16;
 typedef SwU32 SwBitset32;
 typedef SwU64 SwBitset64;
 
-#define swBitSizeOf(x) (sizeof(x)<<3)
-#define swBitsetContains(s1,s2) (((s1)&(s2))==(s2))
-
 SW_PUBL_API_IMPL inline SwU32 swBitLo32(SwU32 N) { return (~((SwU32)0)) >> (32 - N); }
 SW_PUBL_API_IMPL inline SwU32 swBitHi32(SwU32 N) { return (~((SwU32)0)) << (32 - N); }
 SW_PUBL_API_IMPL inline SwU32 swBitSum32(SwU32 u) { return __builtin_popcount(u); }
@@ -54,5 +51,31 @@ SW_PUBL_API_IMPL inline void     swBitSetFw64LSb0(SwU64 bitSize, mutable SwU64* 
     SwU64 clearMask = ((SwU64)1 << bitOffset);
     bitArr64s[slotIndex] = (bitArr64s[slotIndex] & ~clearMask) | (bitValue << bitOffset); 
 }
+
+#define swBitSizeOf(x) (sizeof(x)<<3)
+#define swBitsetContains(s1,s2) (((s1)&(s2))==(s2))
+
+#define SW_BITSET_VA1(ONE,OFF,i0) ((ONE<<((i0)-(OFF))))
+#define SW_BITSET_VA2(ONE,OFF,i0,i1) ((ONE<<((i0)-(OFF)))|(ONE<<((i1)-(OFF))))
+#define SW_BITSET_VA3(ONE,OFF,i0,i1,i2) ((ONE<<((i0)-(OFF)))|(ONE<<((i1)-(OFF)))|(ONE<<((i2)-(OFF))))
+#define SW_BITSET_VA4(ONE,OFF,i0,i1,i2,i3) ((ONE<<((i0)-(OFF)))|(ONE<<((i1)-(OFF)))|(ONE<<((i2)-(OFF)))|(ONE<<((i3)-(OFF))))
+#define SW_BITSET_VA5(ONE,OFF,i0,i1,i2,i3,i4) ((ONE<<((i0)-(OFF)))|(ONE<<((i1)-(OFF)))|(ONE<<((i2)-(OFF)))|(ONE<<((i3)-(OFF)))|(ONE<<((i4)-(OFF))))
+#define SW_BITSET_VA6(ONE,OFF,i0,i1,i2,i3,i4,i5) ((ONE<<((i0)-(OFF)))|(ONE<<((i1)-(OFF)))|(ONE<<((i2)-(OFF)))|(ONE<<((i3)-(OFF)))|(ONE<<((i4)-(OFF)))|(ONE<<((i5)-(OFF))))
+#define SW_BITSET_VA7(ONE,OFF,i0,i1,i2,i3,i4,i5,i6) ((ONE<<((i0)-(OFF)))|(ONE<<((i1)-(OFF)))|(ONE<<((i2)-(OFF)))|(ONE<<((i3)-(OFF)))|(ONE<<((i4)-(OFF)))|(ONE<<((i5)-(OFF)))|(ONE<<((i6)-(OFF))))
+#define SW_BITSET_VA8(ONE,OFF,i0,i1,i2,i3,i4,i5,i6,i7) ((ONE<<((i0)-(OFF)))|(ONE<<((i1)-(OFF)))|(ONE<<((i2)-(OFF)))|(ONE<<((i3)-(OFF)))|(ONE<<((i4)-(OFF)))|(ONE<<((i5)-(OFF)))|(ONE<<((i6)-(OFF)))|(ONE<<((i7)-(OFF))))
+#define SW_BITSET_VA9(ONE,OFF,i0,i1,i2,i3,i4,i5,i6,i7,i8) ((ONE<<((i0)-(OFF)))|(ONE<<((i1)-(OFF)))|(ONE<<((i2)-(OFF)))|(ONE<<((i3)-(OFF)))|(ONE<<((i4)-(OFF)))|(ONE<<((i5)-(OFF)))|(ONE<<((i6)-(OFF)))|(ONE<<((i7)-(OFF)))|(ONE<<((i8)-(OFF))))
+#define SW_BITSET_VA10(ONE,OFF,i0,i1,i2,i3,i4,i5,i6,i7,i8,i9) ((ONE<<((i0)-(OFF)))|(ONE<<((i1)-(OFF)))|(ONE<<((i2)-(OFF)))|(ONE<<((i3)-(OFF)))|(ONE<<((i4)-(OFF)))|(ONE<<((i5)-(OFF)))|(ONE<<((i6)-(OFF)))|(ONE<<((i7)-(OFF)))|(ONE<<((i8)-(OFF)))|(ONE<<((i9)-(OFF))))
+#define SW_BITSET_VA11(ONE,OFF,i0,i1,i2,i3,i4,i5,i6,i7,i8,i9,i10) ((ONE<<((i0)-(OFF)))|(ONE<<((i1)-(OFF)))|(ONE<<((i2)-(OFF)))|(ONE<<((i3)-(OFF)))|(ONE<<((i4)-(OFF)))|(ONE<<((i5)-(OFF)))|(ONE<<((i6)-(OFF)))|(ONE<<((i7)-(OFF)))|(ONE<<((i8)-(OFF)))|(ONE<<((i9)-(OFF)))|(ONE<<((i10)-(OFF))))
+#define SW_BITSET_VA12(ONE,OFF,i0,i1,i2,i3,i4,i5,i6,i7,i8,i9,i10,i11) ((ONE<<((i0)-(OFF)))|(ONE<<((i1)-(OFF)))|(ONE<<((i2)-(OFF)))|(ONE<<((i3)-(OFF)))|(ONE<<((i4)-(OFF)))|(ONE<<((i5)-(OFF)))|(ONE<<((i6)-(OFF)))|(ONE<<((i7)-(OFF)))|(ONE<<((i8)-(OFF)))|(ONE<<((i9)-(OFF)))|(ONE<<((i10)-(OFF)))|(ONE<<((i11)-(OFF))))
+#define SW_BITSET_VA13(ONE,OFF,i0,i1,i2,i3,i4,i5,i6,i7,i8,i9,i10,i11,i12) ((ONE<<((i0)-(OFF)))|(ONE<<((i1)-(OFF)))|(ONE<<((i2)-(OFF)))|(ONE<<((i3)-(OFF)))|(ONE<<((i4)-(OFF)))|(ONE<<((i5)-(OFF)))|(ONE<<((i6)-(OFF)))|(ONE<<((i7)-(OFF)))|(ONE<<((i8)-(OFF)))|(ONE<<((i9)-(OFF)))|(ONE<<((i10)-(OFF)))|(ONE<<((i11)-(OFF)))|(ONE<<((i12)-(OFF))))
+#define SW_BITSET_VA14(ONE,OFF,i0,i1,i2,i3,i4,i5,i6,i7,i8,i9,i10,i11,i12,i13) ((ONE<<((i0)-(OFF)))|(ONE<<((i1)-(OFF)))|(ONE<<((i2)-(OFF)))|(ONE<<((i3)-(OFF)))|(ONE<<((i4)-(OFF)))|(ONE<<((i5)-(OFF)))|(ONE<<((i6)-(OFF)))|(ONE<<((i7)-(OFF)))|(ONE<<((i8)-(OFF)))|(ONE<<((i9)-(OFF)))|(ONE<<((i10)-(OFF)))|(ONE<<((i11)-(OFF)))|(ONE<<((i12)-(OFF)))|(ONE<<((i13)-(OFF))))
+#define SW_BITSET_VA15(ONE,OFF,i0,i1,i2,i3,i4,i5,i6,i7,i8,i9,i10,i11,i12,i13,i14) ((ONE<<((i0)-(OFF)))|(ONE<<((i1)-(OFF)))|(ONE<<((i2)-(OFF)))|(ONE<<((i3)-(OFF)))|(ONE<<((i4)-(OFF)))|(ONE<<((i5)-(OFF)))|(ONE<<((i6)-(OFF)))|(ONE<<((i7)-(OFF)))|(ONE<<((i8)-(OFF)))|(ONE<<((i9)-(OFF)))|(ONE<<((i10)-(OFF)))|(ONE<<((i11)-(OFF)))|(ONE<<((i12)-(OFF)))|(ONE<<((i13)-(OFF)))|(ONE<<((i14)-(OFF))))
+#define SW_BITSET_VA16(ONE,OFF,i0,i1,i2,i3,i4,i5,i6,i7,i8,i9,i10,i11,i12,i13,i14,i15) ((ONE<<((i0)-(OFF)))|(ONE<<((i1)-(OFF)))|(ONE<<((i2)-(OFF)))|(ONE<<((i3)-(OFF)))|(ONE<<((i4)-(OFF)))|(ONE<<((i5)-(OFF)))|(ONE<<((i6)-(OFF)))|(ONE<<((i7)-(OFF)))|(ONE<<((i8)-(OFF)))|(ONE<<((i9)-(OFF)))|(ONE<<((i10)-(OFF)))|(ONE<<((i11)-(OFF)))|(ONE<<((i12)-(OFF)))|(ONE<<((i13)-(OFF)))|(ONE<<((i14)-(OFF)))|(ONE<<((i15)-(OFF))))
+#define SW_BITSET_VA(ONE,OFF,...) SW_TOK_CAT2(SW_BITSET_VA,SW_VA_COUNT(__VA_ARGS__))(__VA_ARGS__)
+
+#define SW_BITSET8(...) SW_BITSET_VA(((SwU8)1),0,__VA_ARGS__)
+#define SW_BITSET16(...) SW_BITSET_VA(((SwU16)1),0,__VA_ARGS__)
+#define SW_BITSET32(...) SW_BITSET_VA(((SwU32)1),0,__VA_ARGS__)
+#define SW_BITSET64(...) SW_BITSET_VA(((SwU64)1),0,__VA_ARGS__)
 
 #endif // SW_BIT_API_H_

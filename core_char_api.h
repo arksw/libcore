@@ -28,6 +28,10 @@ SW_PUBL_API_IMPL inline SwBool swCharIsLowerA(SwU8 b) { return swCharInRangeA(b,
 SW_PUBL_API_IMPL inline SwBool swCharIsUpperA(SwU8 b) { return swCharInRangeA(b, 'A','Z'); }
 SW_PUBL_API_IMPL inline SwBool swCharIsAlphaA(SwU8 b) { return swCharIsLowerA(b) | swCharIsUpperA(b); }
 SW_PUBL_API_IMPL inline SwBool swCharIsAlnumA(SwU8 b) { return swCharIsAlphaA(b) | swCharIsDigitA(b); }
+SW_PUBL_API_IMPL inline SwBool swCharIsBase64NoPadA(SwU8 b) { return swCharIsAlnumA(b) | (b == '/') | (b == '+'); }
+SW_PUBL_API_IMPL inline SwBool swCharIsBase64OrPadA(SwU8 b) { return swCharIsBase64NoPadA(b) | (b == '='); }
+SW_PUBL_API_IMPL inline SwBool swCharIsBase64UrlNoPadA(SwU8 b) { return swCharIsAlnumA(b) | (b == '-') | (b == '_'); }
+SW_PUBL_API_IMPL inline SwBool swCharIsBase64UrlOrPadA(SwU8 b) { return swCharIsBase64UrlNoPadA(b) | (b == '='); }
 SW_PUBL_API_IMPL inline SwU8 swCharToLowerA(SwU8 b) { return b | (0x20 * swCharIsUpperA(b)); }
 SW_PUBL_API_IMPL inline SwU8 swCharToUpperA(SwU8 b) { return b ^ (0x20 * swCharIsLowerA(b)); }
 SW_PUBL_API_IMPL inline SwU8 swCharToSwapCaseA(SwU8 b) { return b ^ (0x20 * swCharIsAlphaA(b)); }
