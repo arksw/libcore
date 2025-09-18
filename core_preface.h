@@ -56,6 +56,24 @@
 enum { swFALSE = 0, swTRUE = 1 };
 enum { swFAIL  = 0, swSUCC = 1 };
 
+#define swF64BitPattern_PosInf  0x7FF0000000000000llu /* positive infinity */
+#define swF64BitPattern_NegInf  0xFFF0000000000000llu /* negative infinity */
+#define swF64BitPattern_Max     0x7FEFFFFFFFFFFFFFllu /* largest positive finite */
+#define swF64BitPattern_Min     0xFFEFFFFFFFFFFFFFllu /* largest negative finite */
+#define swF64BitPattern_EpsNorm 0x0010000000000000llu /* smallest positive normal */
+#define swF64BitPattern_EpsSubn 0x0000000000000001llu /* smallest positive subnormal */
+#define swF64BitPattern_QNaN    0x7FF8000000000000llu /* quiet NaN */
+#define swF64BitPattern_SNaN    0x7FF0000000000001llu /* signaling NaN */
+
+#define swF32BitPattern_PosInf  0x7F800000u /* positive infinity */
+#define swF32BitPattern_NegInf  0xFF800000u /* negative infinity */
+#define swF32BitPattern_Max     0x7F7FFFFFu /* largest positive finite */
+#define swF32BitPattern_Min     0xFF7FFFFFu /* largest negative finite */
+#define swF32BitPattern_EpsNorm 0x00800000u /* smallest positive normal */
+#define swF32BitPattern_EpsSubn 0x00000001u /* smallest positive subnormal */
+#define swF32BitPattern_QNaN    0x7FC00000u /* quiet NaN */
+#define swF32BitPattern_SNaN    0x7F800001u /* signaling NaN */
+
 // Data Types
 #define SwSlice(T,...) T*
 #define SwOr(T,...) T
