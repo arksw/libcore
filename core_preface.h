@@ -130,11 +130,11 @@ typedef union { SwU8 strNb[256]; SwU8 str[256]; } SwStr256bUtf8;
 typedef union { SwU8 strNb[512]; SwU8 str[512]; } SwStr512bUtf8;
 
 // variably sized strings store their own byte lengths alongside a ptr
-// NOTE: the hypothetical zero terminator should never appear before the `byteLen` bytes,
-//       however, it does not have to appear right past it either, the str may or may not even be zero terminated!
-//       this is typically use-case specific, consider typedef a new str type, if code needs to rely on zero terminator.
-typedef struct { union { SwUsz byteLen; SwUsz len; }; SwStrA str; } SwLStrA;
-typedef struct { union { SwUsz byteLen; };  SwStrUtf8 str; } SwLStrUtf8;
+// NOTE: the hypothetical zero terminator should never appear before `byteLen` bytes:
+// - it does not have to appear right past it either, the str may or may not be zero terminated! (type does not signal anything related to zero terminator)
+// - since the zero-terminator is not guaranteed and is typically use-case specific, consider typedef'ing a new (explicitly named) str type
+typedef struct { union { SwUsz byteLen; SwUsz len; }; SwStrA    str; } SwLStrA;
+typedef struct { union { SwUsz byteLen; SwUsz len; }; SwStrUtf8 str; } SwLStrUtf8;
 
 // limits
 #define swUMax64(N) (~0llu >> (64-(N)))
@@ -217,9 +217,5 @@ typedef struct { union { SwUsz byteLen; };  SwStrUtf8 str; } SwLStrUtf8;
 #define SW_SPREAD8(s) s[0],s[1],s[2],s[3],s[4],s[5],s[6],s[7]
 #define SW_SPREAD9(s) s[0],s[1],s[2],s[3],s[4],s[5],s[6],s[7],s[8]
 
-#define SW_STR_UNPACK8z(s) (unsigned)swStrByteLen8z((SwStrUtf8z)s), (const char*)(s)
-#define SW_STR_UNPACK(s) swStrNbOrLStr__ByteLen(s), (const char*)(s->str)
-#define swStrNbOrLStr__ByteLen(s) ((sizeof(*s)==sizeof(s->str)) ? ((SwUsz)swStrNbByteLenOrCap8z(s)) : ((SwUsz)((SwLStrUtf8*)s)->byteLen))
-#define swStrNbByteLenOrCap8z(s) swStrByteLenOrCap8z(sizeof(s->strNb), s->strNb)
 
 #endif // SW_CORE_PREFACE_H_
