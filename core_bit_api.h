@@ -52,6 +52,7 @@ SW_PUBL_API_IMPL inline void     swBitSetFw64LSb0(SwU64 bitSize, mutable SwU64* 
     bitArr64s[slotIndex] = (bitArr64s[slotIndex] & ~clearMask) | (bitValue << bitOffset); 
 }
 
+#define swBitOffsetOf(x) __builtin_ctzll(x)
 #define swBitSizeOf(x) (sizeof(x)<<3)
 #define swBitsetContains(s1,s2) (((s1)&(s2))==(s2))
 
