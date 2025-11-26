@@ -119,6 +119,8 @@ typedef union { SwU8 strNb[64]; SwU8 str[64]; } SwStr64bA;
 typedef union { SwU8 strNb[128]; SwU8 str[128]; } SwStr128bA;
 typedef union { SwU8 strNb[256]; SwU8 str[256]; } SwStr256bA;
 typedef union { SwU8 strNb[512]; SwU8 str[512]; } SwStr512bA;
+typedef union { SwU8 strNb[1024]; SwU8 str[1024]; } SwStr1024bA;
+typedef union { SwU8 strNb[2048]; SwU8 str[2048]; } SwStr2048bA;
 
 typedef union { SwU8 strNb[4]; SwU8 str[4]; } SwStr4bUtf8;
 typedef union { SwU8 strNb[8]; SwU8 str[8]; } SwStr8bUtf8;
@@ -128,6 +130,8 @@ typedef union { SwU8 strNb[64]; SwU8 str[64]; } SwStr64bUtf8;
 typedef union { SwU8 strNb[128]; SwU8 str[128]; } SwStr128bUtf8;
 typedef union { SwU8 strNb[256]; SwU8 str[256]; } SwStr256bUtf8;
 typedef union { SwU8 strNb[512]; SwU8 str[512]; } SwStr512bUtf8;
+typedef union { SwU8 strNb[1024]; SwU8 str[1024]; } SwStr1024bUtf8;
+typedef union { SwU8 strNb[2048]; SwU8 str[2048]; } SwStr2048bUtf8;
 
 // variably sized strings store their own byte lengths alongside a ptr
 // NOTE: the hypothetical zero terminator should never appear before `byteLen` bytes:

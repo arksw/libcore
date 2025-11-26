@@ -13,7 +13,7 @@ SW_PUBL_API_IMPL inline SwUsz swStrByteLenOrCap8z(SwUsz cap, const SwU8* str) { 
 SW_PUBL_API_IMPL inline SwUsz swStrCodeptLen8z(SwStrUtf8z str) { SwUsz len = 0; while (*str != 0) { SW_DASSERT(swByteIsBoCodeptUtf8(*str) & !swByteIsContinUtf8(*str)); ++len; str += swByteGetCodeptByteLenUtf8(*str); } return len; }
 
 SW_PUBL_API_IMPL inline SwIsz swStrCompare8z(SwStrUtf8z str1, SwStrUtf8z str2) { return __builtin_strcmp((const char*)str1, (const char*)str2); }
-SW_PUBL_API_IMPL inline SwBool  swStrEqual8z(SwStrUtf8z str1, SwStrUtf8z str2) { return swStrCompare8z(str1, str2) == 0; }
+SW_PUBL_API_IMPL inline SwBool swStrEqual8z(SwStrUtf8z str1, SwStrUtf8z str2) { return swStrCompare8z(str1, str2) == 0; }
 #define swStrIsAny8z(str,...) SW_TOK_CAT2(swStrIsAny8z_VA,SW_VA_COUNT(__VA_ARGS__))
 SW_PUBL_API_IMPL inline SwBool swStrIsAny8z_VA1(SwStrUtf8z str, SwStrUtf8z a1) { return swStrEqual8z(str,a1); }
 SW_PUBL_API_IMPL inline SwBool swStrIsAny8z_VA2(SwStrUtf8z str, SwStrUtf8z a1, SwStrUtf8z a2) { return swStrEqual8z(str,a1)|swStrEqual8z(str,a2); }
@@ -110,6 +110,20 @@ SW_PRIV_API_IMPL inline SwStr128bA swStrFmtBinaryA(SwU64 value, SwCharA sepChar,
     out.str[w] = '\0';
     
     return out;
+}
+
+SW_PUBL_API_IMPL inline SwUsz swStrCopy8z(mutable SwByteUtf8* dst, SwStrUtf8z src) {
+    SW_DASSERT(dst && src && dst != src);
+    
+    SwUsz w = 0; // write index
+    SwUsz r = 0; // read index
+    while (src[r] != '\0') {
+        dst[w] = src[r];
+        ++r;
+        ++w;
+    }
+    dst[w] = '\0';
+    return w;
 }
 
 #endif // SW_CORE_STR_API_H_
