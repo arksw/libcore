@@ -3,7 +3,7 @@
 
 #include "core_preface.h"
 
-typedef SwU64       SwPtrUInt;
+typedef SwUsz       SwPtrUInt;
 typedef const void* SwPtrAddr;
 
 SW_PUBL_API_IMPL inline SwBool swPtrEqual(SwPtrAddr ptr1, SwPtrAddr ptr2) { return (SwPtrUInt)ptr1 == (SwPtrUInt)ptr2; }

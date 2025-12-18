@@ -20,7 +20,6 @@
 #define SW_TOK_CAT2(a,b) SW__TOK_CAT2(a,b)
 #define SW__TOK_STR(a) #a
 #define SW_TOK_STR(a) SW__TOK_STR(a)
-// @FIXME: ideally figure out a way for VA_COUNT to return 0 if no args are provided!
 #define SW__VA_COUNT(a1,a2,a3,a4,a5,a6,a7,a8,a9,a10,a11,a12,a13,a14,a15,a16,count,...) count
 #define SW_VA_COUNT(...) SW__VA_COUNT(__VA_ARGS__ __VA_OPT__(,) 16,15,14,13,12,11,10,9,8,7,6,5,4,3,2,1,0)
 #define SW_ARR_COUNT(arr) (sizeof(arr)/sizeof((arr)[0]))
@@ -102,43 +101,68 @@ typedef SwBool SwSuccBool;  // Failure (0) vs Success (1)
 
 typedef SwU8  SwCharA;        // ASCII character (7 bits i.e. 0 to 127 included)
 typedef SwU8  SwByteUtf8;     // UTF-8 byte (multiple ones (1+) make up a codepoint)
-typedef SwU32 SwCodeptUtf32;  // UTF-32 codepoint (multiple ones (1+) to make up a grapheme cluster)
-typedef SwSlice(const SwCharA)       SwStrA;         // may or may not be zero terminated (i.e. a zero byte is still treated as a terminator if encountered), len should therefore be available
-typedef SwSlice(const SwByteUtf8)    SwStrUtf8;      // may or may not be zero terminated (i.e. a zero byte is still treated as a terminator if encountered), len should therefore be available
-typedef SwSlice(const SwCodeptUtf32) SwStrUtf32;     // may or may not be zero terminated (i.e. a zero byte is still treated as a terminator if encountered), len should therefore be available
-typedef SwSlice(const SwCharA,:0)       SwStrAz;     // zero terminated ASCII string, len may or may not be available
-typedef SwSlice(const SwByteUtf8,:0)    SwStrUtf8z;  // zero terminated UTF-8 string, len may or may not be available
-typedef SwSlice(const SwCodeptUtf32,:0) SwStrUtf32z; // zero terminated UTF-32 string, len may or may not be available
+typedef SwU32 SwCodeptUtf32;  // UTF-32 codepoint (multiple ones (1+) make up a "visual character" or grapheme cluster)
+typedef SwSlice(const SwCharA)          SwStrA;      // may or may not be zero terminated (i.e. a zero byte is still treated as a terminator if encountered)
+typedef SwSlice(const SwByteUtf8)       SwStrUtf8;   // may or may not be zero terminated (i.e. a zero byte is still treated as a terminator if encountered)
+typedef SwSlice(const SwCodeptUtf32)    SwStrUtf32;  // may or may not be zero terminated (i.e. a zero byte is still treated as a terminator if encountered)
+typedef SwSlice(const SwCharA,:0)       SwStrAz;     // zero terminated ASCII string
+typedef SwSlice(const SwByteUtf8,:0)    SwStrUtf8z;  // zero terminated UTF-8 string
+typedef SwSlice(const SwCodeptUtf32,:0) SwStrUtf32z; // zero terminated UTF-32 string
 
 // fixed size strings for common power of two sizes
-typedef union { SwU8 strNb[4]; SwU8 str[4]; } SwStr4bA;
-typedef union { SwU8 strNb[8]; SwU8 str[8]; } SwStr8bA;
-typedef union { SwU8 strNb[16]; SwU8 str[16]; } SwStr16bA;
-typedef union { SwU8 strNb[32]; SwU8 str[32]; } SwStr32bA;
-typedef union { SwU8 strNb[64]; SwU8 str[64]; } SwStr64bA;
-typedef union { SwU8 strNb[128]; SwU8 str[128]; } SwStr128bA;
-typedef union { SwU8 strNb[256]; SwU8 str[256]; } SwStr256bA;
-typedef union { SwU8 strNb[512]; SwU8 str[512]; } SwStr512bA;
-typedef union { SwU8 strNb[1024]; SwU8 str[1024]; } SwStr1024bA;
-typedef union { SwU8 strNb[2048]; SwU8 str[2048]; } SwStr2048bA;
+#define swStrNb_FmtLit "%.*s"
+#define swStrNb_FmtLitSQ "'%.*s'"
+#define swStrNb_FmtLitDQ "\"%.*s\""
+#define swStrNb_FmtLitBT "`%.*s`"
+#define swStrNb_FmtArgs(s) sizeof((s).bstr), ((s).bstr)
 
-typedef union { SwU8 strNb[4]; SwU8 str[4]; } SwStr4bUtf8;
-typedef union { SwU8 strNb[8]; SwU8 str[8]; } SwStr8bUtf8;
-typedef union { SwU8 strNb[16]; SwU8 str[16]; } SwStr16bUtf8;
-typedef union { SwU8 strNb[32]; SwU8 str[32]; } SwStr32bUtf8;
-typedef union { SwU8 strNb[64]; SwU8 str[64]; } SwStr64bUtf8;
-typedef union { SwU8 strNb[128]; SwU8 str[128]; } SwStr128bUtf8;
-typedef union { SwU8 strNb[256]; SwU8 str[256]; } SwStr256bUtf8;
-typedef union { SwU8 strNb[512]; SwU8 str[512]; } SwStr512bUtf8;
-typedef union { SwU8 strNb[1024]; SwU8 str[1024]; } SwStr1024bUtf8;
-typedef union { SwU8 strNb[2048]; SwU8 str[2048]; } SwStr2048bUtf8;
+typedef union { SwU8 as_bytes_mut[4];    const SwU8 bstr[4];    } SwStr4bUtf8;
+typedef union { SwU8 as_bytes_mut[8];    const SwU8 bstr[8];    } SwStr8bUtf8;
+typedef union { SwU8 as_bytes_mut[16];   const SwU8 bstr[16];   } SwStr16bUtf8;
+typedef union { SwU8 as_bytes_mut[32];   const SwU8 bstr[32];   } SwStr32bUtf8;
+typedef union { SwU8 as_bytes_mut[64];   const SwU8 bstr[64];   } SwStr64bUtf8;
+typedef union { SwU8 as_bytes_mut[128];  const SwU8 bstr[128];  } SwStr128bUtf8;
+typedef union { SwU8 as_bytes_mut[256];  const SwU8 bstr[256];  } SwStr256bUtf8;
+typedef union { SwU8 as_bytes_mut[512];  const SwU8 bstr[512];  } SwStr512bUtf8;
+typedef union { SwU8 as_bytes_mut[1024]; const SwU8 bstr[1024]; } SwStr1024bUtf8; typedef SwStr1024bUtf8 SwStr1KibUtf8;
+typedef union { SwU8 as_bytes_mut[2048]; const SwU8 bstr[2048]; } SwStr2048bUtf8; typedef SwStr2048bUtf8 SwStr2KibUtf8;
+typedef union { SwU8 as_bytes_mut[4096]; const SwU8 bstr[4096]; } SwStr4096bUtf8; typedef SwStr4096bUtf8 SwStr4KibUtf8;
 
-// variably sized strings store their own byte lengths alongside a ptr
-// NOTE: the hypothetical zero terminator should never appear before `byteLen` bytes:
-// - it does not have to appear right past it either, the str may or may not be zero terminated! (type does not signal anything related to zero terminator)
-// - since the zero-terminator is not guaranteed and is typically use-case specific, consider typedef'ing a new (explicitly named) str type
-typedef struct { union { SwUsz byteLen; SwUsz len; }; SwStrA    str; } SwLStrA;
-typedef struct { union { SwUsz byteLen; SwUsz len; }; SwStrUtf8 str; } SwLStrUtf8;
+typedef union { SwU8 as_bytes_mut[4];    const SwU8 bstr[4];    SwStr4bUtf8    as_utf8; } SwStr4bUtf8z;
+typedef union { SwU8 as_bytes_mut[8];    const SwU8 bstr[8];    SwStr8bUtf8    as_utf8; } SwStr8bUtf8z;
+typedef union { SwU8 as_bytes_mut[16];   const SwU8 bstr[16];   SwStr16bUtf8   as_utf8; } SwStr16bUtf8z;
+typedef union { SwU8 as_bytes_mut[32];   const SwU8 bstr[32];   SwStr32bUtf8   as_utf8; } SwStr32bUtf8z;
+typedef union { SwU8 as_bytes_mut[64];   const SwU8 bstr[64];   SwStr64bUtf8   as_utf8; } SwStr64bUtf8z;
+typedef union { SwU8 as_bytes_mut[128];  const SwU8 bstr[128];  SwStr128bUtf8  as_utf8; } SwStr128bUtf8z;
+typedef union { SwU8 as_bytes_mut[256];  const SwU8 bstr[256];  SwStr256bUtf8  as_utf8; } SwStr256bUtf8z;
+typedef union { SwU8 as_bytes_mut[512];  const SwU8 bstr[512];  SwStr512bUtf8  as_utf8; } SwStr512bUtf8z;
+typedef union { SwU8 as_bytes_mut[1024]; const SwU8 bstr[1024]; SwStr1024bUtf8 as_utf8; } SwStr1024bUtf8z; typedef SwStr1024bUtf8z SwStr1KibUtf8z;
+typedef union { SwU8 as_bytes_mut[2048]; const SwU8 bstr[2048]; SwStr2048bUtf8 as_utf8; } SwStr2048bUtf8z; typedef SwStr2048bUtf8z SwStr2KibUtf8z;
+typedef union { SwU8 as_bytes_mut[4096]; const SwU8 bstr[4096]; SwStr4096bUtf8 as_utf8; } SwStr4096bUtf8z; typedef SwStr4096bUtf8z SwStr4KibUtf8z;
+
+typedef union { SwU8 as_bytes_mut[4];    const SwU8 bstr[4];    const SwU8 str[4];    SwStr4bUtf8    as_utf8; } SwStr4bA;
+typedef union { SwU8 as_bytes_mut[8];    const SwU8 bstr[8];    const SwU8 str[8];    SwStr8bUtf8    as_utf8; } SwStr8bA;
+typedef union { SwU8 as_bytes_mut[16];   const SwU8 bstr[16];   const SwU8 str[16];   SwStr16bUtf8   as_utf8; } SwStr16bA;
+typedef union { SwU8 as_bytes_mut[32];   const SwU8 bstr[32];   const SwU8 str[32];   SwStr32bUtf8   as_utf8; } SwStr32bA;
+typedef union { SwU8 as_bytes_mut[64];   const SwU8 bstr[64];   const SwU8 str[64];   SwStr64bUtf8   as_utf8; } SwStr64bA;
+typedef union { SwU8 as_bytes_mut[128];  const SwU8 bstr[128];  const SwU8 str[128];  SwStr128bUtf8  as_utf8; } SwStr128bA;
+typedef union { SwU8 as_bytes_mut[256];  const SwU8 bstr[256];  const SwU8 str[256];  SwStr256bUtf8  as_utf8; } SwStr256bA;
+typedef union { SwU8 as_bytes_mut[512];  const SwU8 bstr[512];  const SwU8 str[512];  SwStr512bUtf8  as_utf8; } SwStr512bA;
+typedef union { SwU8 as_bytes_mut[1024]; const SwU8 bstr[1024]; const SwU8 str[1024]; SwStr1024bUtf8 as_utf8; } SwStr1024bA; typedef SwStr1024bA SwStr1KibA;
+typedef union { SwU8 as_bytes_mut[2048]; const SwU8 bstr[2048]; const SwU8 str[2048]; SwStr2048bUtf8 as_utf8; } SwStr2048bA; typedef SwStr2048bA SwStr2KibA;
+typedef union { SwU8 as_bytes_mut[4096]; const SwU8 bstr[4096]; const SwU8 str[4096]; SwStr4096bUtf8 as_utf8; } SwStr4096bA; typedef SwStr4096bA SwStr4KibA;
+
+typedef union { SwU8 as_bytes_mut[4];    const SwU8 bstr[4];    const SwU8 str[4];    SwStr4bUtf8    as_utf8; SwStr4bUtf8z    as_utf8z; SwStr4bA    as_ascii; } SwStr4bAz;
+typedef union { SwU8 as_bytes_mut[8];    const SwU8 bstr[8];    const SwU8 str[8];    SwStr8bUtf8    as_utf8; SwStr8bUtf8z    as_utf8z; SwStr8bA    as_ascii; } SwStr8bAz;
+typedef union { SwU8 as_bytes_mut[16];   const SwU8 bstr[16];   const SwU8 str[16];   SwStr16bUtf8   as_utf8; SwStr16bUtf8z   as_utf8z; SwStr16bA   as_ascii; } SwStr16bAz;
+typedef union { SwU8 as_bytes_mut[32];   const SwU8 bstr[32];   const SwU8 str[32];   SwStr32bUtf8   as_utf8; SwStr32bUtf8z   as_utf8z; SwStr32bA   as_ascii; } SwStr32bAz;
+typedef union { SwU8 as_bytes_mut[64];   const SwU8 bstr[64];   const SwU8 str[64];   SwStr64bUtf8   as_utf8; SwStr64bUtf8z   as_utf8z; SwStr64bA   as_ascii; } SwStr64bAz;
+typedef union { SwU8 as_bytes_mut[128];  const SwU8 bstr[128];  const SwU8 str[128];  SwStr128bUtf8  as_utf8; SwStr128bUtf8z  as_utf8z; SwStr128bA  as_ascii; } SwStr128bAz;
+typedef union { SwU8 as_bytes_mut[256];  const SwU8 bstr[256];  const SwU8 str[256];  SwStr256bUtf8  as_utf8; SwStr256bUtf8z  as_utf8z; SwStr256bA  as_ascii; } SwStr256bAz;
+typedef union { SwU8 as_bytes_mut[512];  const SwU8 bstr[512];  const SwU8 str[512];  SwStr512bUtf8  as_utf8; SwStr512bUtf8z  as_utf8z; SwStr512bA  as_ascii; } SwStr512bAz;
+typedef union { SwU8 as_bytes_mut[1024]; const SwU8 bstr[1024]; const SwU8 str[1024]; SwStr1024bUtf8 as_utf8; SwStr1024bUtf8z as_utf8z; SwStr1024bA as_ascii; } SwStr1024bAz; typedef SwStr1024bAz SwStr1KibAz;
+typedef union { SwU8 as_bytes_mut[2048]; const SwU8 bstr[2048]; const SwU8 str[2048]; SwStr2048bUtf8 as_utf8; SwStr2048bUtf8z as_utf8z; SwStr2048bA as_ascii; } SwStr2048bAz; typedef SwStr2048bAz SwStr2KibAz;
+typedef union { SwU8 as_bytes_mut[4096]; const SwU8 bstr[4096]; const SwU8 str[4096]; SwStr4096bUtf8 as_utf8; SwStr4096bUtf8z as_utf8z; SwStr4096bA as_ascii; } SwStr4096bAz; typedef SwStr4096bAz SwStr4KibAz;
 
 // limits
 #define swUMax64(N) (~0llu >> (64-(N)))
@@ -160,6 +184,23 @@ typedef struct { union { SwUsz byteLen; SwUsz len; }; SwStrUtf8 str; } SwLStrUtf
 #define swU60_Max 0xFFFFFFFFFFFFFFFllu
 #define swU64_Max 0xFFFFFFFFFFFFFFFFllu
 #define swUsz_Max swU64_Max
+
+#define swI8_Max  0x7Fll
+#define swI12_Max 0x7FFll
+#define swI16_Max 0x7FFFll
+#define swI20_Max 0x7FFFFll
+#define swI24_Max 0x7FFFFFll
+#define swI28_Max 0x7FFFFFFll
+#define swI32_Max 0x7FFFFFFFll
+#define swI36_Max 0x7FFFFFFFFll
+#define swI40_Max 0x7FFFFFFFFFll
+#define swI44_Max 0x7FFFFFFFFFFll
+#define swI48_Max 0x7FFFFFFFFFFFll
+#define swI52_Max 0x7FFFFFFFFFFFFll
+#define swI56_Max 0x7FFFFFFFFFFFFFll
+#define swI60_Max 0x7FFFFFFFFFFFFFFll
+#define swI64_Max 0x7FFFFFFFFFFFFFFFll
+#define swIsz_Max swI64_Max
 
 // helper macros
 #define SW_MAX(a,b) (((a) > (b)) ? (a) : (b))
@@ -221,5 +262,9 @@ typedef struct { union { SwUsz byteLen; SwUsz len; }; SwStrUtf8 str; } SwLStrUtf
 #define SW_SPREAD8(s) s[0],s[1],s[2],s[3],s[4],s[5],s[6],s[7]
 #define SW_SPREAD9(s) s[0],s[1],s[2],s[3],s[4],s[5],s[6],s[7],s[8]
 
+#define SW_ARR_COMMA_COUNT(a) (a), SW_ARR_COUNT(a)
+#define SW_COUNT_COMMA_ARR(a) SW_ARR_COUNT(a), (a)
+#define SW_STR_COMMA_LEN(s) (s), (sizeof(s)-1)
+#define SW_LEN_COMMA_STR(s) (sizeof(s)-1), s
 
 #endif // SW_CORE_PREFACE_H_

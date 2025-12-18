@@ -10,4 +10,4 @@ SW_PUBL_API_IMPL inline SwBool32 swIntInRangeI32(SwI32 val, SwI32 minIncl, SwI32
 SW_PUBL_API_IMPL inline SwBool64 swIntInRangeI64(SwI64 val, SwI64 minIncl, SwI64 maxIncl) { SW_DASSERT(minIncl <= maxIncl); return (val >= minIncl) & (val <= maxIncl); }
 
 
-#endif // SW_INT_API_H_
+#endif // SW_CORE_INT_API_H_

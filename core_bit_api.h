@@ -32,51 +32,54 @@ SW_PUBL_API_IMPL inline SwU64 swBitReadLE64(const SwU8* bp) { return swBitPackLE
 SW_PUBL_API_IMPL inline void swBitWriteBE64(mutable SwU8* bp, SwU64 u) { bp[0]=(u>>56); bp[1]=(u>>48)&0xFF; bp[2]=(u>>40)&0xFF; bp[3]=(u>>32)&0xFF; bp[4]=(u>>24)&0xFF; bp[5]=(u>>16)&0xFF; bp[6]=(u>>8)&0xFF; bp[7]=u&0xFF; }
 SW_PUBL_API_IMPL inline void swBitWriteLE64(mutable SwU8* bp, SwU64 u) { bp[7]=(u>>56); bp[6]=(u>>48)&0xFF; bp[5]=(u>>40)&0xFF; bp[4]=(u>>32)&0xFF; bp[3]=(u>>24)&0xFF; bp[2]=(u>>16)&0xFF; bp[1]=(u>>8)&0xFF; bp[0]=u&0xFF; }
 
+SW_PUBL_API_IMPL inline SwU8 swBitClz8(SwU8 u) { return swBitClz32((SwU32)u << 24); }
+SW_PUBL_API_IMPL inline SwU8 swBitCtz8(SwU8 u) { return swBitCtz8((SwU32)u); }
+SW_PUBL_API_IMPL inline SwU16 swBitClz16(SwU16 u) { return swBitClz16((SwU32)u << 16); }
+SW_PUBL_API_IMPL inline SwU16 swBitCtz16(SwU16 u) { return swBitCtz16((SwU32)u); }
 
-// Reference for future implementation https://fgiesen.wordpress.com/2018/02/19/reading-bits-in-far-too-many-ways-part-1/
-// The `Fw64LSb0` bit layout is forward indexing in the `U64[]` and starts numbering bit from the `LSb-0` bit in each. Schematically, it looks like:
+
+// Reference for future implementation (multi-bit read/write straddling): https://fgiesen.wordpress.com/2018/02/19/reading-bits-in-far-too-many-ways-part-1/
+// BIT_LAYOUT_DEF[`Fw64LSb0`]: forward indexing in the `U64[]`, starts numbering bit from the `LSb-0` bit in each.
+// Schematically, looks like:
+// ```
 // [    [0],     [1], ...,   [N-1]]
 // [    U64,     U64, ...,     U64]
 // [63 .. 0, 63 .. 0, ..., 63 .. 0]
-// [63 .. 0, 127..64, ..., N*64..(N-1)*64]
+// [63 .. 0, 127..64, ..., 64*N..64*(N-1)]
+// ```
 // For example, bit index 64 would refer to the lowest bit (LSb-0) in the U64 at index 1.
-SW_PUBL_API_IMPL inline SwBool64 swBitGetFw64LSb0(SwU64 bitSize, const SwU64* bitArr64s, SwU64 bitIndex) { SW_DASSERT(bitArr64s && bitIndex < bitSize); return (bitArr64s[bitIndex >> 6] >> (bitIndex & 63)); }
-SW_PUBL_API_IMPL inline void     swBitFlipFw64LSb0(SwU64 bitSize, mutable SwU64* bitArr64s, SwU64 bitIndex) { SW_DASSERT(bitArr64s && bitIndex < bitSize); bitArr64s[bitIndex >> 6] ^= ((SwU64)1 << (bitIndex & 63)); }
-SW_PUBL_API_IMPL inline void     swBitSet1Fw64LSb0(SwU64 bitSize, mutable SwU64* bitArr64s, SwU64 bitIndex) { SW_DASSERT(bitArr64s && bitIndex < bitSize); bitArr64s[bitIndex >> 6] |= ((SwU64)1 << (bitIndex & 63)); }
-SW_PUBL_API_IMPL inline void     swBitSet0Fw64LSb0(SwU64 bitSize, mutable SwU64* bitArr64s, SwU64 bitIndex) { SW_DASSERT(bitArr64s && bitIndex < bitSize); bitArr64s[bitIndex >> 6] &= ~((SwU64)1 << (bitIndex & 63)); }
-SW_PUBL_API_IMPL inline void     swBitSetFw64LSb0(SwU64 bitSize, mutable SwU64* bitArr64s, SwU64 bitIndex, SwU64 bitValue) {
-    SW_DASSERT(bitArr64s && bitIndex < bitSize);
-    SwU64 slotIndex = bitIndex >> 6;
-    SwU64 bitOffset = bitIndex & 63;
-    SwU64 clearMask = ((SwU64)1 << bitOffset);
-    bitArr64s[slotIndex] = (bitArr64s[slotIndex] & ~clearMask) | (bitValue << bitOffset); 
-}
+SW_PUBL_API_IMPL inline SwU64 swBitArrReadBitFw64LSb0   (const   SwU64* bit_array, SwU64 bit_index) { return (bit_array[bit_index >> 6] >> (bit_index & 63)) & 0x1; }
+SW_PUBL_API_IMPL inline void  swBitArrFlipBitFw64LSb0   (mutable SwU64* bit_array, SwU64 bit_index) { bit_array[bit_index >> 6] ^= ((SwU64)1 << (bit_index & 63)); }
+SW_PUBL_API_IMPL inline void  swBitArrTurnOnBitFw64LSb0 (mutable SwU64* bit_array, SwU64 bit_index) { bit_array[bit_index >> 6] |= ((SwU64)1 << (bit_index & 63)); }
+SW_PUBL_API_IMPL inline void  swBitArrTurnOffBitFw64LSb0(mutable SwU64* bit_array, SwU64 bit_index) { bit_array[bit_index >> 6] &=~((SwU64)1 << (bit_index & 63)); }
+SW_PUBL_API_IMPL inline void  swBitArrWriteBitFw64LSb0  (mutable SwU64* bit_array, SwU64 bit_index, SwU64 bit_value) { SW_DASSERT(bit_value <= 1); SwU64 slot_index = bit_index >> 6; SwU64 bit_offset = bit_index & 63; SwU64 clear_mask = ((SwU64)1 << bit_offset); bit_array[slot_index] = (bit_array[slot_index] & ~clear_mask) | (bit_value << bit_offset);  }
 
 #define swBitOffsetOf(x) __builtin_ctzll(x)
 #define swBitSizeOf(x) (sizeof(x)<<3)
 #define swBitsetContains(s1,s2) (((s1)&(s2))==(s2))
 
-#define SW_BITSET_VA1(ONE,OFF,i0) ((ONE<<((i0)-(OFF))))
-#define SW_BITSET_VA2(ONE,OFF,i0,i1) ((ONE<<((i0)-(OFF)))|(ONE<<((i1)-(OFF))))
-#define SW_BITSET_VA3(ONE,OFF,i0,i1,i2) ((ONE<<((i0)-(OFF)))|(ONE<<((i1)-(OFF)))|(ONE<<((i2)-(OFF))))
-#define SW_BITSET_VA4(ONE,OFF,i0,i1,i2,i3) ((ONE<<((i0)-(OFF)))|(ONE<<((i1)-(OFF)))|(ONE<<((i2)-(OFF)))|(ONE<<((i3)-(OFF))))
-#define SW_BITSET_VA5(ONE,OFF,i0,i1,i2,i3,i4) ((ONE<<((i0)-(OFF)))|(ONE<<((i1)-(OFF)))|(ONE<<((i2)-(OFF)))|(ONE<<((i3)-(OFF)))|(ONE<<((i4)-(OFF))))
-#define SW_BITSET_VA6(ONE,OFF,i0,i1,i2,i3,i4,i5) ((ONE<<((i0)-(OFF)))|(ONE<<((i1)-(OFF)))|(ONE<<((i2)-(OFF)))|(ONE<<((i3)-(OFF)))|(ONE<<((i4)-(OFF)))|(ONE<<((i5)-(OFF))))
-#define SW_BITSET_VA7(ONE,OFF,i0,i1,i2,i3,i4,i5,i6) ((ONE<<((i0)-(OFF)))|(ONE<<((i1)-(OFF)))|(ONE<<((i2)-(OFF)))|(ONE<<((i3)-(OFF)))|(ONE<<((i4)-(OFF)))|(ONE<<((i5)-(OFF)))|(ONE<<((i6)-(OFF))))
-#define SW_BITSET_VA8(ONE,OFF,i0,i1,i2,i3,i4,i5,i6,i7) ((ONE<<((i0)-(OFF)))|(ONE<<((i1)-(OFF)))|(ONE<<((i2)-(OFF)))|(ONE<<((i3)-(OFF)))|(ONE<<((i4)-(OFF)))|(ONE<<((i5)-(OFF)))|(ONE<<((i6)-(OFF)))|(ONE<<((i7)-(OFF))))
-#define SW_BITSET_VA9(ONE,OFF,i0,i1,i2,i3,i4,i5,i6,i7,i8) ((ONE<<((i0)-(OFF)))|(ONE<<((i1)-(OFF)))|(ONE<<((i2)-(OFF)))|(ONE<<((i3)-(OFF)))|(ONE<<((i4)-(OFF)))|(ONE<<((i5)-(OFF)))|(ONE<<((i6)-(OFF)))|(ONE<<((i7)-(OFF)))|(ONE<<((i8)-(OFF))))
-#define SW_BITSET_VA10(ONE,OFF,i0,i1,i2,i3,i4,i5,i6,i7,i8,i9) ((ONE<<((i0)-(OFF)))|(ONE<<((i1)-(OFF)))|(ONE<<((i2)-(OFF)))|(ONE<<((i3)-(OFF)))|(ONE<<((i4)-(OFF)))|(ONE<<((i5)-(OFF)))|(ONE<<((i6)-(OFF)))|(ONE<<((i7)-(OFF)))|(ONE<<((i8)-(OFF)))|(ONE<<((i9)-(OFF))))
-#define SW_BITSET_VA11(ONE,OFF,i0,i1,i2,i3,i4,i5,i6,i7,i8,i9,i10) ((ONE<<((i0)-(OFF)))|(ONE<<((i1)-(OFF)))|(ONE<<((i2)-(OFF)))|(ONE<<((i3)-(OFF)))|(ONE<<((i4)-(OFF)))|(ONE<<((i5)-(OFF)))|(ONE<<((i6)-(OFF)))|(ONE<<((i7)-(OFF)))|(ONE<<((i8)-(OFF)))|(ONE<<((i9)-(OFF)))|(ONE<<((i10)-(OFF))))
-#define SW_BITSET_VA12(ONE,OFF,i0,i1,i2,i3,i4,i5,i6,i7,i8,i9,i10,i11) ((ONE<<((i0)-(OFF)))|(ONE<<((i1)-(OFF)))|(ONE<<((i2)-(OFF)))|(ONE<<((i3)-(OFF)))|(ONE<<((i4)-(OFF)))|(ONE<<((i5)-(OFF)))|(ONE<<((i6)-(OFF)))|(ONE<<((i7)-(OFF)))|(ONE<<((i8)-(OFF)))|(ONE<<((i9)-(OFF)))|(ONE<<((i10)-(OFF)))|(ONE<<((i11)-(OFF))))
-#define SW_BITSET_VA13(ONE,OFF,i0,i1,i2,i3,i4,i5,i6,i7,i8,i9,i10,i11,i12) ((ONE<<((i0)-(OFF)))|(ONE<<((i1)-(OFF)))|(ONE<<((i2)-(OFF)))|(ONE<<((i3)-(OFF)))|(ONE<<((i4)-(OFF)))|(ONE<<((i5)-(OFF)))|(ONE<<((i6)-(OFF)))|(ONE<<((i7)-(OFF)))|(ONE<<((i8)-(OFF)))|(ONE<<((i9)-(OFF)))|(ONE<<((i10)-(OFF)))|(ONE<<((i11)-(OFF)))|(ONE<<((i12)-(OFF))))
-#define SW_BITSET_VA14(ONE,OFF,i0,i1,i2,i3,i4,i5,i6,i7,i8,i9,i10,i11,i12,i13) ((ONE<<((i0)-(OFF)))|(ONE<<((i1)-(OFF)))|(ONE<<((i2)-(OFF)))|(ONE<<((i3)-(OFF)))|(ONE<<((i4)-(OFF)))|(ONE<<((i5)-(OFF)))|(ONE<<((i6)-(OFF)))|(ONE<<((i7)-(OFF)))|(ONE<<((i8)-(OFF)))|(ONE<<((i9)-(OFF)))|(ONE<<((i10)-(OFF)))|(ONE<<((i11)-(OFF)))|(ONE<<((i12)-(OFF)))|(ONE<<((i13)-(OFF))))
-#define SW_BITSET_VA15(ONE,OFF,i0,i1,i2,i3,i4,i5,i6,i7,i8,i9,i10,i11,i12,i13,i14) ((ONE<<((i0)-(OFF)))|(ONE<<((i1)-(OFF)))|(ONE<<((i2)-(OFF)))|(ONE<<((i3)-(OFF)))|(ONE<<((i4)-(OFF)))|(ONE<<((i5)-(OFF)))|(ONE<<((i6)-(OFF)))|(ONE<<((i7)-(OFF)))|(ONE<<((i8)-(OFF)))|(ONE<<((i9)-(OFF)))|(ONE<<((i10)-(OFF)))|(ONE<<((i11)-(OFF)))|(ONE<<((i12)-(OFF)))|(ONE<<((i13)-(OFF)))|(ONE<<((i14)-(OFF))))
-#define SW_BITSET_VA16(ONE,OFF,i0,i1,i2,i3,i4,i5,i6,i7,i8,i9,i10,i11,i12,i13,i14,i15) ((ONE<<((i0)-(OFF)))|(ONE<<((i1)-(OFF)))|(ONE<<((i2)-(OFF)))|(ONE<<((i3)-(OFF)))|(ONE<<((i4)-(OFF)))|(ONE<<((i5)-(OFF)))|(ONE<<((i6)-(OFF)))|(ONE<<((i7)-(OFF)))|(ONE<<((i8)-(OFF)))|(ONE<<((i9)-(OFF)))|(ONE<<((i10)-(OFF)))|(ONE<<((i11)-(OFF)))|(ONE<<((i12)-(OFF)))|(ONE<<((i13)-(OFF)))|(ONE<<((i14)-(OFF)))|(ONE<<((i15)-(OFF))))
-#define SW_BITSET_VA(ONE,OFF,...) SW_TOK_CAT2(SW_BITSET_VA,SW_VA_COUNT(__VA_ARGS__))(__VA_ARGS__)
+// macro for constructing bitsets by OR-joining multiple arguments (e.g. ```SwBitset32 vowels = SW_BITSET_VA('A', 1u, 'A','E','I','O','U');```)
+#define SW_BITSET_VA1(OFFSET,ONE,i0) (((ONE)<<((i0)-(OFFSET))))
+#define SW_BITSET_VA2(OFFSET,ONE,i0,i1) (((ONE)<<((i0)-(OFFSET)))|((ONE)<<((i1)-(OFFSET))))
+#define SW_BITSET_VA3(OFFSET,ONE,i0,i1,i2) (((ONE)<<((i0)-(OFFSET)))|((ONE)<<((i1)-(OFFSET)))|((ONE)<<((i2)-(OFFSET))))
+#define SW_BITSET_VA4(OFFSET,ONE,i0,i1,i2,i3) (((ONE)<<((i0)-(OFFSET)))|((ONE)<<((i1)-(OFFSET)))|((ONE)<<((i2)-(OFFSET)))|((ONE)<<((i3)-(OFFSET))))
+#define SW_BITSET_VA5(OFFSET,ONE,i0,i1,i2,i3,i4) (((ONE)<<((i0)-(OFFSET)))|((ONE)<<((i1)-(OFFSET)))|((ONE)<<((i2)-(OFFSET)))|((ONE)<<((i3)-(OFFSET)))|((ONE)<<((i4)-(OFFSET))))
+#define SW_BITSET_VA6(OFFSET,ONE,i0,i1,i2,i3,i4,i5) (((ONE)<<((i0)-(OFFSET)))|((ONE)<<((i1)-(OFFSET)))|((ONE)<<((i2)-(OFFSET)))|((ONE)<<((i3)-(OFFSET)))|((ONE)<<((i4)-(OFFSET)))|((ONE)<<((i5)-(OFFSET))))
+#define SW_BITSET_VA7(OFFSET,ONE,i0,i1,i2,i3,i4,i5,i6) (((ONE)<<((i0)-(OFFSET)))|((ONE)<<((i1)-(OFFSET)))|((ONE)<<((i2)-(OFFSET)))|((ONE)<<((i3)-(OFFSET)))|((ONE)<<((i4)-(OFFSET)))|((ONE)<<((i5)-(OFFSET)))|((ONE)<<((i6)-(OFFSET))))
+#define SW_BITSET_VA8(OFFSET,ONE,i0,i1,i2,i3,i4,i5,i6,i7) (((ONE)<<((i0)-(OFFSET)))|((ONE)<<((i1)-(OFFSET)))|((ONE)<<((i2)-(OFFSET)))|((ONE)<<((i3)-(OFFSET)))|((ONE)<<((i4)-(OFFSET)))|((ONE)<<((i5)-(OFFSET)))|((ONE)<<((i6)-(OFFSET)))|((ONE)<<((i7)-(OFFSET))))
+#define SW_BITSET_VA9(OFFSET,ONE,i0,i1,i2,i3,i4,i5,i6,i7,i8) (((ONE)<<((i0)-(OFFSET)))|((ONE)<<((i1)-(OFFSET)))|((ONE)<<((i2)-(OFFSET)))|((ONE)<<((i3)-(OFFSET)))|((ONE)<<((i4)-(OFFSET)))|((ONE)<<((i5)-(OFFSET)))|((ONE)<<((i6)-(OFFSET)))|((ONE)<<((i7)-(OFFSET)))|((ONE)<<((i8)-(OFFSET))))
+#define SW_BITSET_VA10(OFFSET,ONE,i0,i1,i2,i3,i4,i5,i6,i7,i8,i9) (((ONE)<<((i0)-(OFFSET)))|((ONE)<<((i1)-(OFFSET)))|((ONE)<<((i2)-(OFFSET)))|((ONE)<<((i3)-(OFFSET)))|((ONE)<<((i4)-(OFFSET)))|((ONE)<<((i5)-(OFFSET)))|((ONE)<<((i6)-(OFFSET)))|((ONE)<<((i7)-(OFFSET)))|((ONE)<<((i8)-(OFFSET)))|((ONE)<<((i9)-(OFFSET))))
+#define SW_BITSET_VA11(OFFSET,ONE,i0,i1,i2,i3,i4,i5,i6,i7,i8,i9,i10) (((ONE)<<((i0)-(OFFSET)))|((ONE)<<((i1)-(OFFSET)))|((ONE)<<((i2)-(OFFSET)))|((ONE)<<((i3)-(OFFSET)))|((ONE)<<((i4)-(OFFSET)))|((ONE)<<((i5)-(OFFSET)))|((ONE)<<((i6)-(OFFSET)))|((ONE)<<((i7)-(OFFSET)))|((ONE)<<((i8)-(OFFSET)))|((ONE)<<((i9)-(OFFSET)))|((ONE)<<((i10)-(OFFSET))))
+#define SW_BITSET_VA12(OFFSET,ONE,i0,i1,i2,i3,i4,i5,i6,i7,i8,i9,i10,i11) (((ONE)<<((i0)-(OFFSET)))|((ONE)<<((i1)-(OFFSET)))|((ONE)<<((i2)-(OFFSET)))|((ONE)<<((i3)-(OFFSET)))|((ONE)<<((i4)-(OFFSET)))|((ONE)<<((i5)-(OFFSET)))|((ONE)<<((i6)-(OFFSET)))|((ONE)<<((i7)-(OFFSET)))|((ONE)<<((i8)-(OFFSET)))|((ONE)<<((i9)-(OFFSET)))|((ONE)<<((i10)-(OFFSET)))|((ONE)<<((i11)-(OFFSET))))
+#define SW_BITSET_VA13(OFFSET,ONE,i0,i1,i2,i3,i4,i5,i6,i7,i8,i9,i10,i11,i12) (((ONE)<<((i0)-(OFFSET)))|((ONE)<<((i1)-(OFFSET)))|((ONE)<<((i2)-(OFFSET)))|((ONE)<<((i3)-(OFFSET)))|((ONE)<<((i4)-(OFFSET)))|((ONE)<<((i5)-(OFFSET)))|((ONE)<<((i6)-(OFFSET)))|((ONE)<<((i7)-(OFFSET)))|((ONE)<<((i8)-(OFFSET)))|((ONE)<<((i9)-(OFFSET)))|((ONE)<<((i10)-(OFFSET)))|((ONE)<<((i11)-(OFFSET)))|((ONE)<<((i12)-(OFFSET))))
+#define SW_BITSET_VA14(OFFSET,ONE,i0,i1,i2,i3,i4,i5,i6,i7,i8,i9,i10,i11,i12,i13) (((ONE)<<((i0)-(OFFSET)))|((ONE)<<((i1)-(OFFSET)))|((ONE)<<((i2)-(OFFSET)))|((ONE)<<((i3)-(OFFSET)))|((ONE)<<((i4)-(OFFSET)))|((ONE)<<((i5)-(OFFSET)))|((ONE)<<((i6)-(OFFSET)))|((ONE)<<((i7)-(OFFSET)))|((ONE)<<((i8)-(OFFSET)))|((ONE)<<((i9)-(OFFSET)))|((ONE)<<((i10)-(OFFSET)))|((ONE)<<((i11)-(OFFSET)))|((ONE)<<((i12)-(OFFSET)))|((ONE)<<((i13)-(OFFSET))))
+#define SW_BITSET_VA15(OFFSET,ONE,i0,i1,i2,i3,i4,i5,i6,i7,i8,i9,i10,i11,i12,i13,i14) (((ONE)<<((i0)-(OFFSET)))|((ONE)<<((i1)-(OFFSET)))|((ONE)<<((i2)-(OFFSET)))|((ONE)<<((i3)-(OFFSET)))|((ONE)<<((i4)-(OFFSET)))|((ONE)<<((i5)-(OFFSET)))|((ONE)<<((i6)-(OFFSET)))|((ONE)<<((i7)-(OFFSET)))|((ONE)<<((i8)-(OFFSET)))|((ONE)<<((i9)-(OFFSET)))|((ONE)<<((i10)-(OFFSET)))|((ONE)<<((i11)-(OFFSET)))|((ONE)<<((i12)-(OFFSET)))|((ONE)<<((i13)-(OFFSET)))|((ONE)<<((i14)-(OFFSET))))
+#define SW_BITSET_VA16(OFFSET,ONE,i0,i1,i2,i3,i4,i5,i6,i7,i8,i9,i10,i11,i12,i13,i14,i15) (((ONE)<<((i0)-(OFFSET)))|((ONE)<<((i1)-(OFFSET)))|((ONE)<<((i2)-(OFFSET)))|((ONE)<<((i3)-(OFFSET)))|((ONE)<<((i4)-(OFFSET)))|((ONE)<<((i5)-(OFFSET)))|((ONE)<<((i6)-(OFFSET)))|((ONE)<<((i7)-(OFFSET)))|((ONE)<<((i8)-(OFFSET)))|((ONE)<<((i9)-(OFFSET)))|((ONE)<<((i10)-(OFFSET)))|((ONE)<<((i11)-(OFFSET)))|((ONE)<<((i12)-(OFFSET)))|((ONE)<<((i13)-(OFFSET)))|((ONE)<<((i14)-(OFFSET)))|((ONE)<<((i15)-(OFFSET))))
+#define SW_BITSET_VA(OFFSET,ONE,...) SW_TOK_CAT2(SW_BITSET_VA,SW_VA_COUNT(__VA_ARGS__))(__VA_ARGS__)
 
-#define SW_BITSET8(...) SW_BITSET_VA(((SwU8)1),0,__VA_ARGS__)
-#define SW_BITSET16(...) SW_BITSET_VA(((SwU16)1),0,__VA_ARGS__)
-#define SW_BITSET32(...) SW_BITSET_VA(((SwU32)1),0,__VA_ARGS__)
-#define SW_BITSET64(...) SW_BITSET_VA(((SwU64)1),0,__VA_ARGS__)
+#define SW_BITSET8(...)  SW_BITSET_VA(0u, ((SwU8) 1), __VA_ARGS__)
+#define SW_BITSET16(...) SW_BITSET_VA(0u, ((SwU16)1), __VA_ARGS__)
+#define SW_BITSET32(...) SW_BITSET_VA(0u, ((SwU32)1), __VA_ARGS__)
+#define SW_BITSET64(...) SW_BITSET_VA(0u, ((SwU64)1), __VA_ARGS__)
 
-#endif // SW_BIT_API_H_
+#endif // SW_CORE_BIT_API_H_
